@@ -1,0 +1,116 @@
+﻿using HotelReservation.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HotelReservation.Data
+{
+    public class HotelDbContext : DbContext
+    {
+        public HotelDbContext(DbContextOptions<HotelDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<AppUser> Users { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<HotelReview> HotelReviews { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // AppUser
+            modelBuilder.Entity<AppUser>(entity =>
+            {
+                entity.Property(u => u.FullName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(u => u.Email)
+                      .IsRequired()
+                      .HasMaxLength(150);
+
+                entity.HasIndex(u => u.Email)
+                      .IsUnique(); // aynı mailden 2 tane olmasın
+            });
+
+            // Hotel
+            modelBuilder.Entity<Hotel>(entity =>
+            {
+                entity.Property(h => h.Name)
+                      .IsRequired()
+                      .HasMaxLength(150);
+
+                entity.Property(h => h.City)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(h => h.Address)
+                      .IsRequired()
+                      .HasMaxLength(250);
+
+                entity.HasOne(h => h.Manager)
+                      .WithMany(u => u.ManagedHotels)
+                      .HasForeignKey(h => h.ManagerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Room
+            modelBuilder.Entity<Room>(entity =>
+            {
+                entity.Property(r => r.RoomNumber)
+                      .IsRequired()
+                      .HasMaxLength(20);
+
+                entity.Property(r => r.PricePerNight)
+                      .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(r => r.Hotel)
+                      .WithMany(h => h.Rooms)
+                      .HasForeignKey(r => r.HotelId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Reservation
+            modelBuilder.Entity<Reservation>(entity =>
+            {
+                entity.Property(r => r.TotalPrice)
+                      .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(r => r.Customer)
+                      .WithMany(u => u.Reservations)
+                      .HasForeignKey(r => r.CustomerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(r => r.Room)
+                      .WithMany(room => room.Reservations)
+                      .HasForeignKey(r => r.RoomId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // HotelReview
+            modelBuilder.Entity<HotelReview>(entity =>
+            {
+                entity.Property(hr => hr.Rating)
+                      .IsRequired();
+
+                entity.Property(hr => hr.Comment)
+                      .HasMaxLength(1000);
+
+                entity.HasOne(hr => hr.Hotel)
+                      .WithMany(h => h.Reviews)
+                      .HasForeignKey(hr => hr.HotelId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(hr => hr.Customer)
+                      .WithMany(u => u.Reviews)
+                      .HasForeignKey(hr => hr.CustomerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
+    }
+}
