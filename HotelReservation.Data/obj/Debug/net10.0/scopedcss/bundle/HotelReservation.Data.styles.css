@@ -1,0 +1,9 @@
+@import '_content/HotelReservation.Core/HotelReservation.Core.j3ypf15hte.bundle.scp.css';
+
+/* _content/HotelReservation.Data/Component1.razor.rz.scp.css */
+.my-component[b-hyxb8uqyuy] {
+    border: 2px dashed red;
+    padding: 1em;
+    margin: 1em 0;
+    background-image: url('background.png');
+}

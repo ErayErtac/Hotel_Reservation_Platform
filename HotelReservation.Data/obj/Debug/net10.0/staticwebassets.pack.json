@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Data\\obj\\Debug\\net10.0\\scopedcss\\projectbundle\\HotelReservation.Data.bundle.scp.css",
+      "PackagePath": "staticwebassets\\HotelReservation.Data.0ehcc27jnz.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Data\\wwwroot\\background.png",
+      "PackagePath": "staticwebassets\\background.png"
+    },
+    {
+      "Id": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Data\\wwwroot\\exampleJsInterop.js",
+      "PackagePath": "staticwebassets\\exampleJsInterop.js"
+    },
+    {
+      "Id": "obj\\Debug\\net10.0\\staticwebassets\\msbuild.HotelReservation.Data.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net10.0\\staticwebassets\\msbuild.HotelReservation.Data.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net10.0\\staticwebassets\\msbuild.build.HotelReservation.Data.props",
+      "PackagePath": "build\\HotelReservation.Data.props"
+    },
+    {
+      "Id": "obj\\Debug\\net10.0\\staticwebassets\\msbuild.buildMultiTargeting.HotelReservation.Data.props",
+      "PackagePath": "buildMultiTargeting\\HotelReservation.Data.props"
+    },
+    {
+      "Id": "obj\\Debug\\net10.0\\staticwebassets\\msbuild.buildTransitive.HotelReservation.Data.props",
+      "PackagePath": "buildTransitive\\HotelReservation.Data.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

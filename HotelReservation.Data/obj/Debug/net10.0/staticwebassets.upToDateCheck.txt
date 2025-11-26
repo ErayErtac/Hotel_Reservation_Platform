@@ -1,0 +1,3 @@
+wwwroot\background.png
+wwwroot\exampleJsInterop.js
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\wwwroot\exampleJsInterop.js
