@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="HotelReservation.Core/HotelReservation.Core.csproj" Id="25d314e1-16c9-4a67-a26e-52a6f1ec0df7" />
+  <Project Path="HotelReservation.Data/HotelReservation.Data.csproj" Id="b009236d-4fb1-426b-a688-164c800f27f1" />
+  <Project Path="HotelReservation.Web/HotelReservation.Web.csproj" />
+</Solution>
