@@ -1,7 +1,36 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\entities\\hotelreview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\entities\\hotelreview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\enums\\reservationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\enums\\reservationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\entities\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\entities\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\entities\\hotel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\entities\\hotel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\entities\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\entities\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|c:\\users\\eray\\desktop\\workshop\\hotelreservationplatform\\hotelreservation.core\\entities\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D314E1-16C9-4A67-A26E-52A6F1EC0DF7}|HotelReservation.Core\\HotelReservation.Core.csproj|solutionrelative:hotelreservation.core\\entities\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +38,102 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HotelReview.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\HotelReview.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Entities\\HotelReview.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\HotelReview.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Entities\\HotelReview.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:33:25.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Reservation.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Reservation.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Entities\\Reservation.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Reservation.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Entities\\Reservation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:32:26.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Room.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Room.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Entities\\Room.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Room.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Entities\\Room.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:31:57.594Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Hotel.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Hotel.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Entities\\Hotel.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\Hotel.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Entities\\Hotel.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:31:09.372Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppUser.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\AppUser.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Entities\\AppUser.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Entities\\AppUser.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Entities\\AppUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:29:58.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ReservationStatus.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Enums\\ReservationStatus.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Enums\\ReservationStatus.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Enums\\ReservationStatus.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Enums\\ReservationStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:29:29.5Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Enums\\UserRole.cs",
+              "RelativeDocumentMoniker": "HotelReservation.Core\\Enums\\UserRole.cs",
+              "ToolTip": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\Enums\\UserRole.cs",
+              "RelativeToolTip": "HotelReservation.Core\\Enums\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T17:28:32.229Z",
+              "EditorCaption": ""
             }
           ]
         },
