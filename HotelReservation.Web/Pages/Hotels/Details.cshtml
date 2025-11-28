@@ -1,0 +1,74 @@
+﻿@page
+@model HotelReservation.Web.Pages.Hotels.DetailsModel
+
+@{
+    ViewData["Title"] = "Otel Detayı";
+}
+
+@if (Model.Hotel == null)
+{
+    <p>Otel bulunamadı.</p>
+}
+else
+{
+    <h1>@Model.Hotel.Name</h1>
+
+    <p><strong>Şehir:</strong> @Model.Hotel.City</p>
+    <p><strong>Adres:</strong> @Model.Hotel.Address</p>
+    <p><strong>Açıklama:</strong> @Model.Hotel.Description</p>
+
+    <p>
+        <strong>Ortalama Puan:</strong>
+        @{
+            var avg = Model.GetAverageRating();
+        }
+        @if (avg.HasValue)
+        {
+            @avg.Value.ToString("0.0") @: / 5
+        }
+        else
+        {
+            <span>Henüz yorum yok</span>
+        }
+    </p>
+
+    <hr />
+
+    <h3>Odalar</h3>
+
+    @if (Model.Hotel.Rooms == null || !Model.Hotel.Rooms.Any())
+    {
+        <p>Bu otelde henüz tanımlı oda bulunmuyor.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Oda No</th>
+                    <th>Kapasite</th>
+                    <th>Gecelik Fiyat</th>
+                    <th>Açıklama</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var room in Model.Hotel.Rooms)
+            {
+                <tr>
+                    <td>@room.RoomNumber</td>
+                    <td>@room.Capacity</td>
+                    <td>@room.PricePerNight.ToString("C")</td>
+                    <td>@room.Description</td>
+                    <td>
+                        @* İleride buraya "Rezervasyon Yap" butonu koyacağız *@
+                        <button class="btn btn-sm btn-success" disabled>Rezervasyon (yakında)</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    <a asp-page="./Index" class="btn btn-secondary">← Otel listesine dön</a>
+}

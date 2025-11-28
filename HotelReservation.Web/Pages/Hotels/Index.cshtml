@@ -1,0 +1,56 @@
+﻿@page
+@model HotelReservation.Web.Pages.Hotels.IndexModel
+
+@{
+    ViewData["Title"] = "Oteller";
+}
+
+<h1>Oteller</h1>
+
+@if (Model.Hotels == null || !Model.Hotels.Any())
+{
+    <p>Şu anda listelenecek otel bulunamadı.</p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Otel Adı</th>
+            <th>Şehir</th>
+            <th>Açıklama</th>
+            <th>Oda Sayısı</th>
+            <th>Ortalama Puan</th>
+            <th></th> @* Detay butonu için *@
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var hotel in Model.Hotels)
+    {
+        var avgRating = Model.GetAverageRating(hotel);
+        <tr>
+            <td>@hotel.Name</td>
+            <td>@hotel.City</td>
+            <td>@hotel.Description</td>
+            <td>@(hotel.Rooms?.Count ?? 0)</td>
+            <td>
+                @if (avgRating.HasValue)
+                {
+                    @avgRating.Value.ToString("0.0") @: / 5
+                }
+                else
+                {
+                    <span>Henüz yorum yok</span>
+                }
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@hotel.Id" class="btn btn-primary btn-sm">
+                    Detay
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+}
