@@ -5,52 +5,53 @@
     ViewData["Title"] = "Oteller";
 }
 
-<h1>Oteller</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Oteller</h1>
+    <span class="text-muted">
+        @Model.Hotels.Count @(" otel bulundu")
+    </span>
+</div>
 
 @if (Model.Hotels == null || !Model.Hotels.Any())
 {
-    <p>Şu anda listelenecek otel bulunamadı.</p>
+    <div class="alert alert-info">
+        Şu anda listelenecek otel bulunamadı.
+    </div>
 }
 else
 {
-    <table class="table">
-    <thead>
-        <tr>
-            <th>Otel Adı</th>
-            <th>Şehir</th>
-            <th>Açıklama</th>
-            <th>Oda Sayısı</th>
-            <th>Ortalama Puan</th>
-            <th></th> @* Detay butonu için *@
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var hotel in Model.Hotels)
-    {
-        var avgRating = Model.GetAverageRating(hotel);
-        <tr>
-            <td>@hotel.Name</td>
-            <td>@hotel.City</td>
-            <td>@hotel.Description</td>
-            <td>@(hotel.Rooms?.Count ?? 0)</td>
-            <td>
-                @if (avgRating.HasValue)
-                {
-                    @avgRating.Value.ToString("0.0") @: / 5
-                }
-                else
-                {
-                    <span>Henüz yorum yok</span>
-                }
-            </td>
-            <td>
-                <a asp-page="./Details" asp-route-id="@hotel.Id" class="btn btn-primary btn-sm">
-                    Detay
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
+    <div class="row g-3">
+        @foreach (var hotel in Model.Hotels)
+        {
+            var avgRating = Model.GetAverageRating(hotel);
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@hotel.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@hotel.City</h6>
+                        <p class="card-text flex-grow-1">
+                            @hotel.Description
+                        </p>
+                        <ul class="list-unstyled small mb-3">
+                            <li><strong>Oda Sayısı:</strong> @(hotel.Rooms?.Count ?? 0)</li>
+                            <li>
+                                <strong>Ortalama Puan:</strong>
+                                @if (avgRating.HasValue)
+                                {
+                                    @avgRating.Value.ToString("0.0") @: / 5
+                                }
+                                else
+                                {
+                                    <span>Henüz yorum yok</span>
+                                }
+                            </li>
+                        </ul>
+                        <a asp-page="./Details" asp-route-id="@hotel.Id" class="btn btn-primary mt-auto">
+                            Detayları Gör
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }

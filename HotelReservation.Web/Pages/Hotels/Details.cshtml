@@ -7,68 +7,87 @@
 
 @if (Model.Hotel == null)
 {
-    <p>Otel bulunamadı.</p>
+    <div class="alert alert-danger">
+        Otel bulunamadı.
+    </div>
 }
 else
 {
-    <h1>@Model.Hotel.Name</h1>
+    <div class="mb-3">
+        <a asp-page="./Index" class="btn btn-link">&larr; Otel listesine dön</a>
+    </div>
 
-    <p><strong>Şehir:</strong> @Model.Hotel.City</p>
-    <p><strong>Adres:</strong> @Model.Hotel.Address</p>
-    <p><strong>Açıklama:</strong> @Model.Hotel.Description</p>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h3 class="card-title">@Model.Hotel.Name</h3>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        @Model.Hotel.City
+                    </h6>
+                    <p class="card-text">
+                        <strong>Adres:</strong> @Model.Hotel.Address
+                    </p>
+                    <p class="card-text">
+                        <strong>Açıklama:</strong> @Model.Hotel.Description
+                    </p>
+                    <p class="card-text">
+                        <strong>Ortalama Puan:</strong>
+                        @{
+                            var avg = Model.GetAverageRating();
+                        }
+                        @if (avg.HasValue)
+                        {
+                            @avg.Value.ToString("0.0") @: / 5
+                        }
+                        else
+                        {
+                            <span>Henüz yorum yok</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
 
-    <p>
-        <strong>Ortalama Puan:</strong>
-        @{
-            var avg = Model.GetAverageRating();
-        }
-        @if (avg.HasValue)
-        {
-            @avg.Value.ToString("0.0") @: / 5
-        }
-        else
-        {
-            <span>Henüz yorum yok</span>
-        }
-    </p>
+        <div class="col-md-7">
+            <h4>Odalar</h4>
 
-    <hr />
-
-    <h3>Odalar</h3>
-
-    @if (Model.Hotel.Rooms == null || !Model.Hotel.Rooms.Any())
-    {
-        <p>Bu otelde henüz tanımlı oda bulunmuyor.</p>
-    }
-    else
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Oda No</th>
-                    <th>Kapasite</th>
-                    <th>Gecelik Fiyat</th>
-                    <th>Açıklama</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var room in Model.Hotel.Rooms)
+            @if (Model.Hotel.Rooms == null || !Model.Hotel.Rooms.Any())
             {
-                <tr>
-                    <td>@room.RoomNumber</td>
-                    <td>@room.Capacity</td>
-                    <td>@room.PricePerNight.ToString("C")</td>
-                    <td>@room.Description</td>
-                    <td>
-                        @* İleride buraya "Rezervasyon Yap" butonu koyacağız *@
-                        <button class="btn btn-sm btn-success" disabled>Rezervasyon (yakında)</button>
-                    </td>
-                </tr>
+                <div class="alert alert-info">
+                    Bu otelde henüz tanımlı oda bulunmuyor.
+                </div>
             }
-            </tbody>
-        </table>
-    }
-
-    <a asp-page="./Index" class="btn btn-secondary">← Otel listesine dön</a>
+            else
+            {
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Oda No</th>
+                            <th>Kapasite</th>
+                            <th>Gecelik Fiyat</th>
+                            <th>Açıklama</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var room in Model.Hotel.Rooms)
+                    {
+                        <tr>
+                            <td>@room.RoomNumber</td>
+                            <td>@room.Capacity</td>
+                            <td>@room.PricePerNight.ToString("C")</td>
+                            <td>@room.Description</td>
+                            <td>
+                                <button class="btn btn-sm btn-success" disabled>
+                                    Rezervasyon (yakında)
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
 }
