@@ -15,6 +15,13 @@ builder.Services.AddDbContext<HotelDbContext>(options =>
 
 var app = builder.Build();
 
+// SEED ÇAÐRISI (scope açarak)
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
+    DbInitializer.Seed(dbContext);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
