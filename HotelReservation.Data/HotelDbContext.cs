@@ -18,6 +18,8 @@ namespace HotelReservation.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<HotelReview> HotelReviews { get; set; }
+        public DbSet<AvailableRoomResult> AvailableRoomResults { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -111,6 +113,14 @@ namespace HotelReservation.Data
                       .HasForeignKey(hr => hr.CustomerId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Keyless entity: Stored Procedure sonucu
+            modelBuilder.Entity<AvailableRoomResult>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null); // Gerçek bir view'e map etmiyor, sadece query için kullanıyoruz
+            });
+
         }
     }
 }
