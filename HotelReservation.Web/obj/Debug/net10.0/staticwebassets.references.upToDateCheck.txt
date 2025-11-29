@@ -12,3 +12,5 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\ob
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.build.json

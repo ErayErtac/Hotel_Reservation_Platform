@@ -1,0 +1,52 @@
+﻿@page
+@model HotelReservation.Web.Pages.Reservations.CreateModel
+
+@{
+    ViewData["Title"] = "Rezervasyon Yap";
+}
+
+<h1>Rezervasyon Yap</h1>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">
+        @Model.SuccessMessage
+    </div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+
+<form method="post" class="row g-3">
+    <input type="hidden" asp-for="RoomId" />
+
+    <div class="col-md-3">
+        <label class="form-label">Giriş Tarihi</label>
+        <input asp-for="CheckIn" type="date" class="form-control" />
+        <span asp-validation-for="CheckIn" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Çıkış Tarihi</label>
+        <input asp-for="CheckOut" type="date" class="form-control" />
+        <span asp-validation-for="CheckOut" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Kişi Sayısı</label>
+        <input asp-for="GuestCount" type="number" min="1" class="form-control" />
+        <span asp-validation-for="GuestCount" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">Rezervasyonu Onayla</button>
+        <a asp-page="/Hotels/Index" class="btn btn-secondary ms-2">İptal</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

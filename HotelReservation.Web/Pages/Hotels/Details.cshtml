@@ -79,9 +79,12 @@ else
                             <td>@room.PricePerNight.ToString("C")</td>
                             <td>@room.Description</td>
                             <td>
-                                <button class="btn btn-sm btn-success" disabled>
-                                    Rezervasyon (yakında)
-                                </button>
+                                <a asp-page="/Reservations/Create"
+                                   asp-route-roomId="@room.Id"
+                                   class="btn btn-sm btn-success">
+                                    Rezervasyon Yap
+                                </a>
+
                             </td>
                         </tr>
                     }
