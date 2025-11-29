@@ -1,0 +1,63 @@
+﻿@page
+@model HotelReservation.Web.Pages.Search.IndexModel
+
+@{
+    ViewData["Title"] = "Oda Arama (SP Test)";
+}
+
+<h1>Oda Arama (Stored Procedure Test)</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <label class="form-label">Şehir</label>
+        <input asp-for="City" class="form-control" placeholder="Antalya" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Giriş Tarihi</label>
+        <input asp-for="CheckIn" type="date" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Çıkış Tarihi</label>
+        <input asp-for="CheckOut" type="date" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Kişi Sayısı</label>
+        <input asp-for="GuestCount" type="number" min="1" class="form-control" />
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Ara</button>
+    </div>
+</form>
+
+@if (Model.Results != null && Model.Results.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Otel</th>
+                <th>Şehir</th>
+                <th>Adres</th>
+                <th>Oda No</th>
+                <th>Kapasite</th>
+                <th>Gecelik Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Results)
+            {
+                <tr>
+                    <td>@item.HotelName</td>
+                    <td>@item.City</td>
+                    <td>@item.Address</td>
+                    <td>@item.RoomNumber</td>
+                    <td>@item.Capacity</td>
+                    <td>@item.PricePerNight.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (HttpContext.Request.QueryString.HasValue)
+{
+    <div class="alert alert-warning">Kriterlere uygun müsait oda bulunamadı.</div>
+}
