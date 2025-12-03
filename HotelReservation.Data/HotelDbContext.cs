@@ -21,6 +21,8 @@ namespace HotelReservation.Data
         public DbSet<AvailableRoomResult> AvailableRoomResults { get; set; }
         public DbSet<HotelSummary> HotelSummaries { get; set; }
         public DbSet<HotelStatsResult> HotelStatsResults { get; set; }
+        public DbSet<CustomerReservationResult> CustomerReservationResults { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -136,6 +138,14 @@ namespace HotelReservation.Data
                 entity.HasNoKey();
                 entity.ToView(null); // gerçek bir view'e bağlı değil, sadece FromSql için
             });
+
+            // sp_GetCustomerReservations sonucu için keyless entity
+            modelBuilder.Entity<CustomerReservationResult>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null);
+            });
+
 
         }
     }

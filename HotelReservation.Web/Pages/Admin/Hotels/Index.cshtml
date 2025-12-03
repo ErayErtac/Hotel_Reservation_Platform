@@ -1,0 +1,58 @@
+﻿@page
+@model HotelReservation.Web.Pages.Admin.Hotels.IndexModel
+
+@{
+    ViewData["Title"] = "Admin - Otel Özeti";
+}
+
+<h1>Admin - Otel Özeti</h1>
+
+@if (Model.Hotels == null || !Model.Hotels.Any())
+{
+    <div class="alert alert-info">
+        Görüntülenecek otel bulunamadı.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Otel</th>
+                <th>Şehir</th>
+                <th>Oda Sayısı</th>
+                <th>Rezervasyon Sayısı</th>
+                <th>Toplam Gelir</th>
+                <th>Ortalama Puan</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var h in Model.Hotels)
+        {
+            <tr>
+                <td>@h.Name</td>
+                <td>@h.City</td>
+                <td>@h.RoomCount</td>
+                <td>@h.TotalReservations</td>
+                <td>@(h.TotalRevenue.HasValue ? h.TotalRevenue.Value.ToString("C") : "-")</td>
+                <td>
+                    @if (h.AverageRating.HasValue && h.AverageRating.Value > 0)
+                    {
+                        @h.AverageRating.Value.ToString("0.0") @: / 5
+                    }
+                    else
+                    {
+                        <span>Henüz yorum yok</span>
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@h.HotelId" class="btn btn-sm btn-primary">
+                        Detay / Onay
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
