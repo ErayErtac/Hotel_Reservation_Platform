@@ -165,7 +165,6 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\scopedcss\bundle\HotelReservation.Web.styles.css
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\scopedcss\projectbundle\HotelReservation.Web.bundle.scp.css
-C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\qypjp2q5qu-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\asz1wptl6b-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\ccg6c9db5j-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\25mkwny1vw-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -241,3 +240,4 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\HotelReservation.Web.pdb
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\HotelReservation.Web.genruntimeconfig.cache
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\ref\HotelReservation.Web.dll
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\qypjp2q5qu-{0}-fuosnnugz8-fuosnnugz8.gz

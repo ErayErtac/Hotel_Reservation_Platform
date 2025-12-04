@@ -1,0 +1,53 @@
+﻿@page
+@model HotelReservation.Web.Pages.Manager.Hotels.IndexModel
+
+@{
+    ViewData["Title"] = "Otel Yönetimi";
+}
+
+<h1>Otel Yönetimi</h1>
+
+<p>
+    <a asp-page="./Create" class="btn btn-primary">Yeni Otel Ekle</a>
+</p>
+
+@if (Model.Hotels == null || !Model.Hotels.Any())
+{
+    <div class="alert alert-info">
+        Şu anda üzerinize kayıtlı otel bulunmuyor.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Otel</th>
+                <th>Şehir</th>
+                <th>Onay Durumu</th>
+                <th>Aktif</th>
+                <th>Oluşturulma</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var h in Model.Hotels)
+            {
+                <tr>
+                    <td>@h.Name</td>
+                    <td>@h.City</td>
+                    <td>
+                        @(h.IsApproved ? "Onaylı" : "Onaysız (admin onayı gerekiyor)")
+                    </td>
+                    <td>@(h.IsActive ? "Evet" : "Hayır")</td>
+                    <td>@h.CreatedAt.ToLocalTime()</td>
+                    <td>
+                        <a asp-page="/Manager/Rooms/Index" asp-route-hotelId="@h.Id" class="btn btn-sm btn-outline-secondary">
+                            Odaları Yönet
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

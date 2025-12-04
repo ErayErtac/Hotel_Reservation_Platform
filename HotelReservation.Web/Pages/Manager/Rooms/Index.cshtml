@@ -1,0 +1,55 @@
+﻿@page
+@model HotelReservation.Web.Pages.Manager.Rooms.IndexModel
+
+@{
+    ViewData["Title"] = "Oda Yönetimi";
+}
+
+@if (Model.Hotel == null)
+{
+    <div class="alert alert-danger">Otel bulunamadı veya bu otele erişim izniniz yok.</div>
+}
+else
+{
+    <h1>@Model.Hotel.Name - Odalar</h1>
+
+    <p>
+        <a asp-page="/Manager/Hotels/Index" class="btn btn-link">&larr; Otel listesine dön</a>
+        <a asp-page="./Create" asp-route-hotelId="@Model.Hotel.Id" class="btn btn-primary">
+            Yeni Oda Ekle
+        </a>
+    </p>
+
+    @if (Model.Rooms == null || !Model.Rooms.Any())
+    {
+        <div class="alert alert-info">
+            Bu otel için henüz oda tanımlanmamış.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Oda No</th>
+                    <th>Kapasite</th>
+                    <th>Gecelik Fiyat</th>
+                    <th>Açıklama</th>
+                    <th>Aktif</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Rooms)
+                {
+                    <tr>
+                        <td>@r.RoomNumber</td>
+                        <td>@r.Capacity</td>
+                        <td>@r.PricePerNight.ToString("C")</td>
+                        <td>@r.Description</td>
+                        <td>@(r.IsActive ? "Evet" : "Hayır")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

@@ -1,10 +1,80 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Hotel Reservation Platform";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section mb-5">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <h1 class="display-5 fw-bold mb-3">Hayalindeki oteli bul, kolayca rezervasyon yap.</h1>
+        <p class="lead mb-4">
+            Yüzlerce otel arasından şehir ve tarih seç, uygun odaları saniyeler içinde görüntüle.
+        </p>
+
+        <form class="row g-3 hero-search-form" method="get" asp-page="/Search/Index">
+            <div class="col-md-4">
+                <label class="form-label text-light">Şehir</label>
+                <input name="City" class="form-control" placeholder="İstanbul, Antalya, İzmir..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-light">Giriş</label>
+                <input name="CheckIn" type="date" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-light">Çıkış</label>
+                <input name="CheckOut" type="date" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-light">Kişi</label>
+                <input name="GuestCount" type="number" min="1" value="1" class="form-control" />
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary btn-lg px-4">
+                    Otel Ara
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="mb-3">Popüler Oteller</h2>
+    <p class="text-muted mb-4">
+        Sistemde kayıtlı otelleri görmek için hemen <a asp-page="/Hotels/Index">Oteller</a> sayfasına göz atabilirsin.
+    </p>
+
+    <div class="info-cards row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Güvenli Rezervasyon</h5>
+                    <p class="card-text">
+                        Admin onaylı oteller sayesinde müşteriler sadece güvenilir tesisler üzerinden işlem yapar.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Otel Yönetimi</h5>
+                    <p class="card-text">
+                        Otel yöneticileri kendi otel ve odalarını yönetebilir, rezervasyonları takip edebilir.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Gerçek Veritabanı Mantığı</h5>
+                    <p class="card-text">
+                        Stored procedure, trigger, fonksiyon ve view’ler ile güçlü bir veri tabanı altyapısı.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

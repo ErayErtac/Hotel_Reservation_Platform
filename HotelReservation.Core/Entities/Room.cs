@@ -9,7 +9,7 @@ namespace HotelReservation.Core.Entities
         public int Id { get; set; }
 
         public int HotelId { get; set; }
-        public Hotel Hotel { get; set; } = null!;
+        public Hotel? Hotel { get; set; } = null!;
 
         public string RoomNumber { get; set; } = null!;
         public int Capacity { get; set; }

@@ -1,0 +1,46 @@
+﻿@page
+@model HotelReservation.Web.Pages.Manager.Hotels.CreateModel
+
+@{
+    ViewData["Title"] = "Yeni Otel Ekle";
+}
+
+<h1>Yeni Otel Ekle</h1>
+
+<form method="post" class="row g-3">
+
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+    <div class="col-md-6">
+        <label class="form-label">Otel Adı</label>
+        <input asp-for="Input.Name" class="form-control" />
+        <span asp-validation-for="Input.Name" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Şehir</label>
+        <input asp-for="Input.City" class="form-control" />
+        <span asp-validation-for="Input.City" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Adres</label>
+        <input asp-for="Input.Address" class="form-control" />
+        <span asp-validation-for="Input.Address" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-12">
+        <label class="form-label">Açıklama</label>
+        <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Input.Description" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">Kaydet</button>
+        <a asp-page="./Index" class="btn btn-secondary ms-2">İptal</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

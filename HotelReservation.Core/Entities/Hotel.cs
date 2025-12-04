@@ -20,7 +20,7 @@ namespace HotelReservation.Core.Entities
 
         // Otel yöneticisi
         public int ManagerId { get; set; }
-        public AppUser Manager { get; set; } = null!;
+        public AppUser? Manager { get; set; } = null!;
 
         // Navigation
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
