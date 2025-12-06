@@ -1,0 +1,79 @@
+﻿@page
+@model HotelReservation.Web.Pages.Manager.Hotels.ImagesModel
+
+@{
+    ViewData["Title"] = "Otel Fotoğrafları";
+}
+
+@if (Model.Hotel == null)
+{
+    <div class="alert alert-danger">Otel bulunamadı veya bu otele erişim izniniz yok.</div>
+}
+else
+{
+    <h1>@Model.Hotel.Name - Fotoğraflar</h1>
+
+    <p>
+        <a asp-page="/Manager/Hotels/Index" class="btn btn-link">&larr; Otel listesine dön</a>
+    </p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Yeni Fotoğraf Yükle</h5>
+            <form method="post" enctype="multipart/form-data" asp-page-handler="Upload">
+                <input type="hidden" asp-for="HotelId" />
+                <div class="mb-3">
+                    <input type="file" name="UploadFiles" multiple class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Yükle</button>
+            </form>
+        </div>
+    </div>
+
+    <h5>Mevcut Fotoğraflar</h5>
+
+    @if (!Model.Images.Any())
+    {
+        <div class="alert alert-info">Bu otele ait kayıtlı fotoğraf bulunmuyor.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var img in Model.Images)
+            {
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="@img.ImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" />
+                        <div class="card-body">
+                            @if (img.IsMain)
+                            {
+                                <span class="badge bg-success mb-2">Ana Fotoğraf</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary mb-2">Diğer</span>
+                            }
+
+                            <form method="post" asp-page-handler="SetMain" class="d-inline">
+                                <input type="hidden" name="HotelId" value="@Model.Hotel.Id" />
+                                <input type="hidden" name="imageId" value="@img.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-primary" @(img.IsMain ? "disabled" : null)>
+                                    Ana Yap
+                                </button>
+                            </form>
+
+                            <form method="post" asp-page-handler="Delete" class="d-inline ms-1"
+                                  onsubmit="return confirm('Bu fotoğrafı silmek istediğinizden emin misiniz?');">
+                                <input type="hidden" name="HotelId" value="@Model.Hotel.Id" />
+                                <input type="hidden" name="imageId" value="@img.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Sil
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

@@ -25,6 +25,7 @@ namespace HotelReservation.Web.Pages.Hotels
             Hotels = _context.Hotels
                 .Include(h => h.Rooms)
                 .Include(h => h.Reviews)
+                .Include(h => h.Images)
                 .Where(h => h.IsActive && h.IsApproved)
                 .OrderBy(h => h.City)
                 .ThenBy(h => h.Name)

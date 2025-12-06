@@ -25,5 +25,6 @@ namespace HotelReservation.Core.Entities
         // Navigation
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
         public ICollection<HotelReview> Reviews { get; set; } = new List<HotelReview>();
+        public ICollection<HotelImage> Images { get; set; } = new List<HotelImage>();
     }
 }

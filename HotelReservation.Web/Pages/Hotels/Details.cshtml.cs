@@ -23,6 +23,7 @@ namespace HotelReservation.Web.Pages.Hotels
             Hotel = _context.Hotels
                 .Include(h => h.Rooms)
                 .Include(h => h.Reviews)
+                .Include(h => h.Images)
                 .FirstOrDefault(h => h.Id == id && h.IsActive && h.IsApproved);
 
             if (Hotel == null)

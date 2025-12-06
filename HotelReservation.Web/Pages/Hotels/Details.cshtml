@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Otel Detayı";
+    var mainImage = Model.Hotel?.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath;
 }
 
 @if (Model.Hotel == null)
@@ -19,6 +20,37 @@ else
 
     <div class="row">
         <div class="col-md-5">
+
+            @* Ana fotoğraf *@
+            @if (!string.IsNullOrEmpty(mainImage))
+            {
+                <img id="mainHotelImage"
+                     src="@mainImage"
+                     class="img-fluid mb-3"
+                     style="border-radius: 0.75rem; max-height: 280px; object-fit: cover; width: 100%;" />
+            }
+
+            @* Küçük fotoğraf galerisi *@
+            @if (Model.Hotel.Images != null && Model.Hotel.Images.Any())
+            {
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach (var img in Model.Hotel.Images)
+                    {
+                        <img src="@img.ImagePath"
+                             onclick="changeMainImage('@img.ImagePath')"
+                             style="
+                                 width: 80px;
+                                 height: 60px;
+                                 object-fit: cover;
+                                 border-radius: 0.5rem;
+                                 cursor: pointer;
+                                 border: @(img.IsMain ? "2px solid #0d6efd" : "1px solid #ccc");
+                                 opacity:@(img.IsMain ? "1" : "0.7");
+                             " />
+                    }
+                </div>
+            }
+
             <div class="card shadow-sm mb-3">
                 <div class="card-body">
                     <h3 class="card-title">@Model.Hotel.Name</h3>
@@ -84,7 +116,6 @@ else
                                    class="btn btn-sm btn-success">
                                     Rezervasyon Yap
                                 </a>
-
                             </td>
                         </tr>
                     }
@@ -93,4 +124,15 @@ else
             }
         </div>
     </div>
+
+    @section Scripts {
+        <script>
+            function changeMainImage(src) {
+                var img = document.getElementById('mainHotelImage');
+                if (img) {
+                    img.src = src;
+                }
+            }
+        </script>
+    }
 }

@@ -22,7 +22,7 @@ namespace HotelReservation.Data
         public DbSet<HotelSummary> HotelSummaries { get; set; }
         public DbSet<HotelStatsResult> HotelStatsResults { get; set; }
         public DbSet<CustomerReservationResult> CustomerReservationResults { get; set; }
-
+        public DbSet<HotelImage> HotelImages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +63,11 @@ namespace HotelReservation.Data
                       .WithMany(u => u.ManagedHotels)
                       .HasForeignKey(h => h.ManagerId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(h => h.Images)
+                      .WithOne(i => i.Hotel)
+                      .HasForeignKey(i => i.HotelId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Room
@@ -146,7 +151,15 @@ namespace HotelReservation.Data
                 entity.ToView(null);
             });
 
+            modelBuilder.Entity<HotelImage>(entity =>
+            {
+                entity.Property(i => i.ImagePath)
+                      .IsRequired()
+                      .HasMaxLength(500);
 
+                entity.Property(i => i.UploadedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+            });
         }
     }
 }
