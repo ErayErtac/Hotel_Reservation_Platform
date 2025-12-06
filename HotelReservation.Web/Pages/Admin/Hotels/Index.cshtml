@@ -7,6 +7,15 @@
 
 <h1>Admin - Otel Yönetimi</h1>
 
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger">@emsg</div>
+}
+
 @if (Model.PendingCount > 0)
 {
     <div class="alert alert-warning">
@@ -56,7 +65,8 @@ else
                 <th>Yönetici</th>
                 <th>Onay Durumu</th>
                 <th>Oluşturulma</th>
-                <th></th>
+                <th>İşlemler</th>
+                <th>Sil</th>
             </tr>
         </thead>
         <tbody>
@@ -85,6 +95,16 @@ else
                         <a asp-page="./Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary">
                             İncele / Onayla
                         </a>
+                    </td>
+                    <td>
+                        @if (!h.IsApproved)
+                        {
+                            <form method="post" asp-page-handler="Delete" class="d-inline ms-1"
+                                  onsubmit="return confirm('Bu onaylanmamış oteli silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="id" value="@h.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                            </form>
+                        }
                     </td>
                 </tr>
             }

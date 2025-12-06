@@ -11,13 +11,13 @@
     <a asp-page="/Manager/Hotels/Index" class="btn btn-link">&larr; Otellerime dön</a>
 </p>
 
-@if (TempData["SuccessMessage"] != null)
+@if (TempData["Message"] is string msg)
 {
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    <div class="alert alert-success">@msg</div>
 }
-@if (TempData["ErrorMessage"] != null)
+@if (TempData["ErrorMessage"] is string emsg)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger">@emsg</div>
 }
 
 @if (Model.Reservations == null || !Model.Reservations.Any())
@@ -40,7 +40,8 @@ else
                 <th>Kişi</th>
                 <th>Tutar</th>
                 <th>Durum</th>
-                <th></th>
+                <th>İptal</th>
+                <th>Sil</th>
             </tr>
         </thead>
         <tbody>
@@ -94,6 +95,14 @@ else
                             </form>
                         }
                     </td>
+                    <td>
+                        <form method="post" asp-page-handler="Delete" class="d-inline"
+                              onsubmit="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                        </form>
+                    </td>
+
                 </tr>
             }
         </tbody>

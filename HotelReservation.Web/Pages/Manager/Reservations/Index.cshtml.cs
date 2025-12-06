@@ -19,8 +19,7 @@ namespace HotelReservation.Web.Pages.Manager.Reservations
             _context = context;
         }
 
-        private int CurrentUserId =>
-                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        private int DemoManagerId => 2;
 
         public IList<Reservation> Reservations { get; set; } = new List<Reservation>();
 
@@ -32,11 +31,10 @@ namespace HotelReservation.Web.Pages.Manager.Reservations
 
         public async Task OnGetAsync()
         {
-            // Burada zaten manager'ýn otellerine baðlý rezervasyonlarý çekiyorsun varsayýyorum
             Reservations = await _context.Reservations
                 .Include(r => r.Room).ThenInclude(r => r.Hotel)
                 .Include(r => r.Customer)
-                .Where(r => r.Room.Hotel.ManagerId == CurrentUserId)
+                .Where(r => r.Room.Hotel.ManagerId == DemoManagerId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
         }

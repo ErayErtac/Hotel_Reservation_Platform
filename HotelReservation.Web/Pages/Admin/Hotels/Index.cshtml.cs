@@ -25,6 +25,12 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
         // Kaç otel onay bekliyor?
         public int PendingCount { get; set; }
 
+        [TempData]
+        public string? Message { get; set; }
+
+        [TempData]
+        public string? ErrorMessage { get; set; }
+
         // Filtre: pending / approved / all
         [BindProperty(SupportsGet = true)]
         public string StatusFilter { get; set; } = "pending";
@@ -56,6 +62,32 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
             }
 
             Hotels = await query.ToListAsync();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var hotel = await _context.Hotels
+                .Include(h => h.Rooms)
+                .FirstOrDefaultAsync(h => h.Id == id && !h.IsApproved);
+
+            if (hotel == null)
+                return NotFound();
+
+            bool hasReservations = await _context.Reservations
+                .AnyAsync(r => r.Room.HotelId == id);
+
+            if (hasReservations)
+            {
+                ErrorMessage = "Bu otel için rezervasyon bulunduðu için silinemez.";
+            }
+            else
+            {
+                _context.Hotels.Remove(hotel);
+                await _context.SaveChangesAsync();
+                Message = "Otel baþarýyla silindi.";
+            }
+
+            return RedirectToPage();
         }
     }
 }
