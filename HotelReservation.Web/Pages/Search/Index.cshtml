@@ -7,57 +7,92 @@
 
 <h1>Oda Arama (Stored Procedure Test)</h1>
 
-<form method="get" class="row g-3 mb-3">
-    <div class="col-md-3">
-        <label class="form-label">Şehir</label>
-        <input asp-for="City" class="form-control" placeholder="Antalya" />
-    </div>
-    <div class="col-md-3">
-        <label class="form-label">Giriş Tarihi</label>
-        <input asp-for="CheckIn" type="date" class="form-control" />
-    </div>
-    <div class="col-md-3">
-        <label class="form-label">Çıkış Tarihi</label>
-        <input asp-for="CheckOut" type="date" class="form-control" />
-    </div>
-    <div class="col-md-2">
-        <label class="form-label">Kişi Sayısı</label>
-        <input asp-for="GuestCount" type="number" min="1" class="form-control" />
-    </div>
-    <div class="col-md-1 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Ara</button>
+<form method="get" class="mb-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Otel ve Oda Arama</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Şehir</label>
+                    <input asp-for="City" class="form-control" placeholder="Antalya, İstanbul..." />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Giriş Tarihi</label>
+                    <input asp-for="CheckIn" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="CheckIn" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Çıkış Tarihi</label>
+                    <input asp-for="CheckOut" type="date" class="form-control" />
+                    <span asp-validation-for="CheckOut" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Kişi Sayısı</label>
+                    <input asp-for="GuestCount" type="number" min="1" class="form-control" />
+                    <span asp-validation-for="GuestCount" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fiyat Aralığı (Gecelik)</label>
+                    <div class="input-group">
+                        <input asp-for="MinPrice" type="number" min="0" step="0.01" class="form-control" placeholder="Min" />
+                        <span class="input-group-text">-</span>
+                        <input asp-for="MaxPrice" type="number" min="0" step="0.01" class="form-control" placeholder="Max" />
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Ara</button>
+                    <a asp-page="./Index" class="btn btn-secondary">Temizle</a>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 
 @if (Model.Results != null && Model.Results.Any())
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Otel</th>
-                <th>Şehir</th>
-                <th>Adres</th>
-                <th>Oda No</th>
-                <th>Kapasite</th>
-                <th>Gecelik Fiyat</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Results)
-            {
-                <tr>
-                    <td>@item.HotelName</td>
-                    <td>@item.City</td>
-                    <td>@item.Address</td>
-                    <td>@item.RoomNumber</td>
-                    <td>@item.Capacity</td>
-                    <td>@item.PricePerNight.ToString("C")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>@Model.Results.Count sonuç bulundu</h5>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var item in Model.Results)
+        {
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.HotelName</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.City</h6>
+                        <p class="card-text small text-muted">@item.Address</p>
+                        
+                        <div class="mb-2">
+                            <span class="badge bg-info me-1">Oda: @item.RoomNumber</span>
+                            <span class="badge bg-secondary me-1">Kapasite: @item.Capacity kişi</span>
+                            <span class="badge bg-success">@item.PricePerNight.ToString("C") / gece</span>
+                        </div>
+
+                        <a asp-page="/Reservations/Create" 
+                           asp-route-roomId="@item.RoomId"
+                           asp-route-checkIn="@Model.CheckIn?.ToString("yyyy-MM-dd")"
+                           asp-route-checkOut="@Model.CheckOut?.ToString("yyyy-MM-dd")"
+                           asp-route-guestCount="@Model.GuestCount"
+                           class="btn btn-primary btn-sm">
+                            Rezervasyon Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
 else if (HttpContext.Request.QueryString.HasValue)
 {
-    <div class="alert alert-warning">Kriterlere uygun müsait oda bulunamadı.</div>
+    <div class="alert alert-warning">
+        <h5>Sonuç bulunamadı</h5>
+        <p>Kriterlere uygun müsait oda bulunamadı. Lütfen farklı tarih veya şehir deneyin.</p>
+    </div>
 }

@@ -16,11 +16,12 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Manager", "ManagerOnly");
     options.Conventions.AuthorizeFolder("/Customer", "CustomerOnly");
 
-    // Giriþ sayfasý herkese açýk
+    // Giriï¿½ sayfasï¿½ herkese aï¿½ï¿½k
     options.Conventions.AllowAnonymousToPage("/Account/Login");
+    options.Conventions.AllowAnonymousToPage("/Account/Register");
 });
 
-// DbContext kaydý
+// DbContext kaydï¿½
 builder.Services.AddDbContext<HotelDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("HotelConnection");
@@ -30,9 +31,9 @@ builder.Services.AddDbContext<HotelDbContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";       // giriþ sayfasý
-        options.LogoutPath = "/Account/Logout";     // çýkýþ sayfasý
-        options.AccessDeniedPath = "/Account/AccessDenied"; // (istersek yaparýz)
+        options.LoginPath = "/Account/Login";       // giriï¿½ sayfasï¿½
+        options.LogoutPath = "/Account/Logout";     // ï¿½ï¿½kï¿½ï¿½ sayfasï¿½
+        options.AccessDeniedPath = "/Account/AccessDenied"; // (istersek yaparï¿½z)
     });
 
 builder.Services.AddAuthorization(options =>
@@ -50,7 +51,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// SEED ÇAÐRISI (scope açarak)
+// SEED ï¿½Aï¿½RISI (scope aï¿½arak)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();

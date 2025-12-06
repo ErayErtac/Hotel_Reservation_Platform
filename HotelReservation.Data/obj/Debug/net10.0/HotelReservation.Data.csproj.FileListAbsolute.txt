@@ -37,10 +37,10 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\ob
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets\msbuild.buildMultiTargeting.HotelReservation.Data.props
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets\msbuild.buildTransitive.HotelReservation.Data.props
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.pack.json
-C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\HotelRes.CD0F44D3.Up2Date
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\HotelReservation.Data.dll
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\refint\HotelReservation.Data.dll
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\HotelReservation.Data.pdb
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\HotelReservation.Data.genruntimeconfig.cache
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\ref\HotelReservation.Data.dll
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

@@ -18,13 +18,19 @@ namespace HotelReservation.Web.Pages.Hotels
 
         public Hotel? Hotel { get; set; }
 
-        public IActionResult OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            Hotel = _context.Hotels
+            Hotel = await _context.Hotels
                 .Include(h => h.Rooms)
+                    .ThenInclude(r => r.RoomType)
+                .Include(h => h.Rooms)
+                    .ThenInclude(r => r.Amenities)
                 .Include(h => h.Reviews)
+                    .ThenInclude(r => r.Customer)
                 .Include(h => h.Images)
-                .FirstOrDefault(h => h.Id == id && h.IsActive && h.IsApproved);
+                .Include(h => h.Amenities)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(h => h.Id == id && h.IsActive && h.IsApproved);
 
             if (Hotel == null)
             {

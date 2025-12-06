@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "bbgj2tepMIo=",
+  "dgSpecHash": "6mPKM+AoJWA=",
   "success": true,
   "projectFilePath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Data\\HotelReservation.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Eray\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\Eray\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.0\\microsoft.aspnetcore.authorization.10.0.0.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\microsoft.aspnetcore.components\\10.0.0\\microsoft.aspnetcore.components.10.0.0.nupkg.sha512",

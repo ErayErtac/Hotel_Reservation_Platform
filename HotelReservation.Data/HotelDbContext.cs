@@ -23,6 +23,10 @@ namespace HotelReservation.Data
         public DbSet<HotelStatsResult> HotelStatsResults { get; set; }
         public DbSet<CustomerReservationResult> CustomerReservationResults { get; set; }
         public DbSet<HotelImage> HotelImages { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<HotelAmenity> HotelAmenities { get; set; }
+        public DbSet<RoomAmenity> RoomAmenities { get; set; }
+        public DbSet<ManagerApplication> ManagerApplications { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -90,6 +94,11 @@ namespace HotelReservation.Data
                       .WithMany(h => h.Rooms)
                       .HasForeignKey(r => r.HotelId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(r => r.RoomType)
+                      .WithMany(rt => rt.Rooms)
+                      .HasForeignKey(r => r.RoomTypeId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Reservation
@@ -174,6 +183,41 @@ namespace HotelReservation.Data
                 entity.Property(i => i.UploadedAt)
                       .HasDefaultValueSql("GETUTCDATE()");
             });
+
+            // RoomType
+            modelBuilder.Entity<RoomType>(entity =>
+            {
+                entity.Property(rt => rt.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
+            });
+
+            // HotelAmenity
+            modelBuilder.Entity<HotelAmenity>(entity =>
+            {
+                entity.Property(ha => ha.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.HasOne(ha => ha.Hotel)
+                      .WithMany(h => h.Amenities)
+                      .HasForeignKey(ha => ha.HotelId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // RoomAmenity
+            modelBuilder.Entity<RoomAmenity>(entity =>
+            {
+                entity.Property(ra => ra.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.HasOne(ra => ra.Room)
+                      .WithMany(r => r.Amenities)
+                      .HasForeignKey(ra => ra.RoomId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
         }
     }
 }

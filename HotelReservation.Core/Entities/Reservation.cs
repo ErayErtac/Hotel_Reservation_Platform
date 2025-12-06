@@ -24,6 +24,11 @@ namespace HotelReservation.Core.Entities
 
         public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
 
+        public bool IsPaid { get; set; } = false;
+        public DateTime? PaidAt { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CancelledAt { get; set; }
+        public string? CancellationReason { get; set; }
     }
 }

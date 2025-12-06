@@ -1,0 +1,184 @@
+@page
+@model HotelReservation.Web.Pages.Admin.ManagerApplications.IndexModel
+
+@{
+    ViewData["Title"] = "Otel Yöneticisi Başvuruları";
+}
+
+<h1>Otel Yöneticisi Başvuruları</h1>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @emsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="mb-3">
+    <a asp-page="/Admin/Hotels/Index" class="btn btn-link">&larr; Admin Paneline Dön</a>
+</div>
+
+<div class="mb-3">
+    <div class="btn-group" role="group">
+        <a asp-page="./Index" asp-route-statusFilter="pending" 
+           class="btn @(Model.StatusFilter == "pending" ? "btn-primary" : "btn-outline-primary")">
+            Bekleyenler 
+            @if (Model.StatusFilter == "pending" || string.IsNullOrEmpty(Model.StatusFilter))
+            {
+                <span class="badge bg-light text-dark">@Model.PendingCount</span>
+            }
+        </a>
+        <a asp-page="./Index" asp-route-statusFilter="approved" 
+           class="btn @(Model.StatusFilter == "approved" ? "btn-primary" : "btn-outline-primary")">
+            Onaylananlar
+        </a>
+        <a asp-page="./Index" asp-route-statusFilter="rejected" 
+           class="btn @(Model.StatusFilter == "rejected" ? "btn-primary" : "btn-outline-primary")">
+            Reddedilenler
+        </a>
+    </div>
+</div>
+
+@if (Model.Applications == null || !Model.Applications.Any())
+{
+    <div class="alert alert-info">
+        @(Model.StatusFilter == "pending" ? "Bekleyen başvuru bulunmuyor." : 
+          Model.StatusFilter == "approved" ? "Onaylanan başvuru bulunmuyor." : 
+          "Reddedilen başvuru bulunmuyor.")
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Başvuran</th>
+                    <th>E-posta</th>
+                    <th>Başvuru Tarihi</th>
+                    <th>Durum</th>
+                    <th>Notlar</th>
+                    @if (Model.StatusFilter == "pending")
+                    {
+                        <th>İşlemler</th>
+                    }
+                    else if (Model.StatusFilter == "rejected")
+                    {
+                        <th>Red Nedeni</th>
+                    }
+                    else
+                    {
+                        <th>Onaylayan</th>
+                        <th>Onay Tarihi</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.Applications)
+                {
+                    <tr>
+                        <td>@app.Id</td>
+                        <td>@app.User.FullName</td>
+                        <td>@app.User.Email</td>
+                        <td>@app.ApplicationDate.ToString("dd MMMM yyyy HH:mm")</td>
+                        <td>
+                            @switch (app.Status)
+                            {
+                                case HotelReservation.Core.Enums.ApplicationStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Beklemede</span>
+                                    break;
+                                case HotelReservation.Core.Enums.ApplicationStatus.Approved:
+                                    <span class="badge bg-success">Onaylandı</span>
+                                    break;
+                                case HotelReservation.Core.Enums.ApplicationStatus.Rejected:
+                                    <span class="badge bg-danger">Reddedildi</span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(app.Notes))
+                            {
+                                <small class="text-muted">@app.Notes</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        @if (Model.StatusFilter == "pending")
+                        {
+                            <td>
+                                <form method="post" asp-page-handler="Approve" class="d-inline">
+                                    <input type="hidden" name="id" value="@app.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success" 
+                                            onclick="return confirm('Bu başvuruyu onaylamak istediğinize emin misiniz? Kullanıcı otel yöneticisi olacak.');">
+                                        Onayla
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#rejectModal@(app.Id)">
+                                    Reddet
+                                </button>
+
+                                <!-- Reject Modal -->
+                                <div class="modal fade" id="rejectModal@(app.Id)" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Başvuruyu Reddet</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="post" asp-page-handler="Reject">
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="id" value="@app.Id" />
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Red Nedeni (Opsiyonel)</label>
+                                                        <textarea name="rejectionReason" class="form-control" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                                                    <button type="submit" class="btn btn-danger">Reddet</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else if (Model.StatusFilter == "rejected")
+                        {
+                            <td>
+                                @if (!string.IsNullOrEmpty(app.RejectionReason))
+                                {
+                                    <small class="text-muted">@app.RejectionReason</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                        }
+                        else
+                        {
+                            <td>@(app.ApprovedByUser?.FullName ?? "-")</td>
+                            <td>@(app.ApprovedDate?.ToString("dd MMMM yyyy HH:mm") ?? "-")</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+

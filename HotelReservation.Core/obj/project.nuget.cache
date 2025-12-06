@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HcX88DLkdCk=",
+  "dgSpecHash": "fNQKqbCObc8=",
   "success": true,
   "projectFilePath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\HotelReservation.Core.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Eray\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.0\\microsoft.aspnetcore.authorization.10.0.0.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\microsoft.aspnetcore.components\\10.0.0\\microsoft.aspnetcore.components.10.0.0.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\10.0.0\\microsoft.aspnetcore.components.analyzers.10.0.0.nupkg.sha512",

@@ -40,6 +40,15 @@
 </div>
 
 <div class="container">
+    @if (!User.Identity?.IsAuthenticated ?? true)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">Hoş geldiniz!</h5>
+            <p class="mb-2">Rezervasyon yapmak için önce <a asp-page="/Account/Register" class="alert-link fw-bold">kayıt olun</a> veya <a asp-page="/Account/Login" class="alert-link">giriş yapın</a>.</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <h2 class="mb-3">Popüler Oteller</h2>
     <p class="text-muted mb-4">
         Sistemde kayıtlı otelleri görmek için hemen <a asp-page="/Hotels/Index">Oteller</a> sayfasına göz atabilirsin.

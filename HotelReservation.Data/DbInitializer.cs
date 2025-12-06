@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using HotelReservation.Core.Entities;
 using HotelReservation.Core.Enums;
+using HotelReservation.Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Data
@@ -25,7 +26,7 @@ namespace HotelReservation.Data
             {
                 FullName = "System Admin",
                 Email = "admin@hotelplatform.com",
-                PasswordHash = "admin123", // DERS PROJESİ olduğu için basit tuttuk
+                PasswordHash = PasswordHasher.HashPassword("admin123"),
                 Role = UserRole.Admin,
                 IsActive = true
             };
@@ -34,7 +35,7 @@ namespace HotelReservation.Data
             {
                 FullName = "Ali Otelci",
                 Email = "ali.manager@hotelplatform.com",
-                PasswordHash = "manager1",
+                PasswordHash = PasswordHasher.HashPassword("manager1"),
                 Role = UserRole.HotelManager,
                 IsActive = true
             };
@@ -43,7 +44,7 @@ namespace HotelReservation.Data
             {
                 FullName = "Ayşe Otelci",
                 Email = "ayse.manager@hotelplatform.com",
-                PasswordHash = "manager2",
+                PasswordHash = PasswordHasher.HashPassword("manager2"),
                 Role = UserRole.HotelManager,
                 IsActive = true
             };
@@ -52,7 +53,7 @@ namespace HotelReservation.Data
             {
                 FullName = "Mehmet Müşteri",
                 Email = "mehmet.customer@hotelplatform.com",
-                PasswordHash = "customer1",
+                PasswordHash = PasswordHasher.HashPassword("customer1"),
                 Role = UserRole.Customer,
                 IsActive = true
             };
@@ -61,7 +62,7 @@ namespace HotelReservation.Data
             {
                 FullName = "Zeynep Müşteri",
                 Email = "zeynep.customer@hotelplatform.com",
-                PasswordHash = "customer2",
+                PasswordHash = PasswordHasher.HashPassword("customer2"),
                 Role = UserRole.Customer,
                 IsActive = true
             };

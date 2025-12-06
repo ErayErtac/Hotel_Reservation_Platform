@@ -1,0 +1,77 @@
+@page
+@model HotelReservation.Web.Pages.Customer.CancelReservationModel
+
+@{
+    ViewData["Title"] = "Rezervasyon İptal";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-4">Rezervasyon İptal</h1>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+
+        @if (Model.Reservation != null)
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Rezervasyon Detayları</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Otel:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.Room?.Hotel?.Name</dd>
+
+                        <dt class="col-sm-3">Oda:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.Room?.RoomNumber</dd>
+
+                        <dt class="col-sm-3">Giriş Tarihi:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.CheckIn.ToString("dd MMMM yyyy")</dd>
+
+                        <dt class="col-sm-3">Çıkış Tarihi:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.CheckOut.ToString("dd MMMM yyyy")</dd>
+
+                        <dt class="col-sm-3">Misafir Sayısı:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.GuestCount</dd>
+
+                        <dt class="col-sm-3">Toplam Fiyat:</dt>
+                        <dd class="col-sm-9">@Model.Reservation.TotalPrice.ToString("C")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            @if (string.IsNullOrEmpty(Model.ErrorMessage) && string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <form method="post">
+                    <div class="mb-3">
+                        <label asp-for="CancellationReason" class="form-label">İptal Nedeni (Opsiyonel)</label>
+                        <textarea asp-for="CancellationReason" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="CancellationReason" class="text-danger"></span>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <strong>Dikkat:</strong> Bu işlem geri alınamaz. Rezervasyonunuz iptal edilecektir.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Rezervasyonu İptal Et</button>
+                        <a asp-page="/Customer/MyReservations" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

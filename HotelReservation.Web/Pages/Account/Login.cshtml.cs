@@ -33,7 +33,7 @@ namespace HotelReservation.Web.Pages.Account
 
         public void OnGet()
         {
-            // Sadece formu gösteriyoruz
+            // Sadece formu gÃ¶steriyoruz
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
@@ -44,15 +44,31 @@ namespace HotelReservation.Web.Pages.Account
             }
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == Email && u.PasswordHash == Password);
+                .FirstOrDefaultAsync(u => u.Email == Email);
 
             if (user == null)
             {
-                ErrorMessage = "E-posta veya þifre hatalý.";
+                ErrorMessage = "E-posta veya ÅŸifre hatalÄ±.";
                 return Page();
             }
 
-            // Rol string'ini enum'dan üretelim (UserRole enum'ýnýn ToString() deðeri: Admin / HotelManager / Customer)
+            // Åžifre doÄŸrulama
+            bool isPasswordValid = HotelReservation.Core.Services.PasswordHasher.VerifyPassword(Password, user.PasswordHash);
+
+            if (!isPasswordValid)
+            {
+                ErrorMessage = "E-posta veya ÅŸifre hatalÄ±.";
+                return Page();
+            }
+
+            // EÄŸer ÅŸifre eski formatta (plain text) ise, hash'le ve gÃ¼ncelle
+            if (!HotelReservation.Core.Services.PasswordHasher.IsBcryptHash(user.PasswordHash))
+            {
+                user.PasswordHash = HotelReservation.Core.Services.PasswordHasher.HashPassword(Password);
+                await _context.SaveChangesAsync();
+            }
+
+            // Rol string'ini enum'dan Ã¼retelim (UserRole enum'Ä±nÄ±n ToString() deÄŸeri: Admin / HotelManager / Customer)
             var roleName = user.Role.ToString();
 
             var claims = new List<Claim>
@@ -80,7 +96,7 @@ namespace HotelReservation.Web.Pages.Account
                 return Redirect(returnUrl);
             }
 
-            // Role'ye göre yönlendirme
+            // Role'ye gÃ¶re yÃ¶nlendirme
             return roleName switch
             {
                 "Admin" => RedirectToPage("/Admin/Hotels/Index"),

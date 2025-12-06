@@ -1,0 +1,102 @@
+@page
+@model HotelReservation.Web.Pages.Reservations.ConfirmationModel
+
+@{
+    ViewData["Title"] = "Rezervasyon Onayı";
+}
+
+@if (Model.Reservation != null)
+{
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="text-success">Rezervasyonunuz Onaylandı!</h1>
+                <p class="lead">Rezervasyon detaylarınız aşağıda yer almaktadır.</p>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Rezervasyon Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Rezervasyon Numarası:</strong><br>
+                            <span class="h5">#@Model.Reservation.Id</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Rezervasyon Tarihi:</strong><br>
+                            @Model.Reservation.CreatedAt.ToString("dd MMMM yyyy HH:mm")
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Otel:</strong><br>
+                            @Model.Reservation.Room?.Hotel?.Name
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Şehir:</strong><br>
+                            @Model.Reservation.Room?.Hotel?.City
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Oda Numarası:</strong><br>
+                            @Model.Reservation.Room?.RoomNumber
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Misafir Sayısı:</strong><br>
+                            @Model.Reservation.GuestCount kişi
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Giriş Tarihi:</strong><br>
+                            @Model.Reservation.CheckIn.ToString("dd MMMM yyyy")
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Çıkış Tarihi:</strong><br>
+                            @Model.Reservation.CheckOut.ToString("dd MMMM yyyy")
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Toplam Fiyat:</strong><br>
+                            <span class="h4 text-primary">@Model.Reservation.TotalPrice.ToString("C")</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Durum:</strong><br>
+                            @switch (Model.Reservation.Status)
+                            {
+                                case HotelReservation.Core.Enums.ReservationStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Beklemede</span>
+                                    break;
+                                case HotelReservation.Core.Enums.ReservationStatus.Confirmed:
+                                    <span class="badge bg-success">Onaylandı</span>
+                                    break;
+                                case HotelReservation.Core.Enums.ReservationStatus.Cancelled:
+                                    <span class="badge bg-secondary">İptal</span>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a asp-page="/Customer/MyReservations" class="btn btn-primary me-2">Rezervasyonlarımı Görüntüle</a>
+                <a asp-page="/Hotels/Index" class="btn btn-outline-secondary">Diğer Otelleri Gör</a>
+            </div>
+        </div>
+    </div>
+}
+

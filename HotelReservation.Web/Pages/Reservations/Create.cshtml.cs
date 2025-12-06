@@ -114,7 +114,7 @@ namespace HotelReservation.Web.Pages.Reservations
             await command.ExecuteNonQueryAsync();
 
             var newId = (int)pReservationId.Value;
-            SuccessMessage = $"Rezervasyon basariyla olusturuldu. ID: {newId}";
+            return RedirectToPage("/Reservations/Confirmation", new { id = newId });
         }
         catch (Exception ex)
         {

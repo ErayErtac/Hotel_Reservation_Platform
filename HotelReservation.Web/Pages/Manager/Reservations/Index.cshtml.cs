@@ -1,4 +1,5 @@
 using HotelReservation.Core.Entities;
+using HotelReservation.Core.Enums;
 using HotelReservation.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,7 +20,8 @@ namespace HotelReservation.Web.Pages.Manager.Reservations
             _context = context;
         }
 
-        private int DemoManagerId => 2;
+        private int CurrentUserId =>
+            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<Reservation> Reservations { get; set; } = new List<Reservation>();
 
@@ -32,26 +34,98 @@ namespace HotelReservation.Web.Pages.Manager.Reservations
         public async Task OnGetAsync()
         {
             Reservations = await _context.Reservations
-                .Include(r => r.Room).ThenInclude(r => r.Hotel)
+                .Include(r => r.Room)
+                    .ThenInclude(room => room!.Hotel)
                 .Include(r => r.Customer)
-                .Where(r => r.Room.Hotel.ManagerId == DemoManagerId)
+                .Where(r => r.Room != null && r.Room.Hotel != null && r.Room.Hotel.ManagerId == CurrentUserId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
         }
 
-        // REZERVASYON S�LME
+        // REZERVASYON ONAYLAMA
+        public async Task<IActionResult> OnPostApproveAsync(int id)
+        {
+            try
+            {
+                var reservation = await _context.Reservations
+                    .Include(r => r.Room)
+                        .ThenInclude(room => room!.Hotel)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.Room != null && r.Room.Hotel != null && r.Room.Hotel.ManagerId == CurrentUserId);
+
+                if (reservation == null)
+                {
+                    ErrorMessage = "Rezervasyon bulunamadı veya bu rezervasyonu onaylama yetkiniz yok.";
+                    return RedirectToPage();
+                }
+
+                reservation.Status = ReservationStatus.Confirmed;
+                await _context.SaveChangesAsync();
+
+                Message = "Rezervasyon başarıyla onaylandı.";
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Rezervasyon onaylanırken hata oluştu: " + ex.Message;
+            }
+
+            return RedirectToPage();
+        }
+
+        // REZERVASYON İPTAL ETME (Manager tarafından)
+        public async Task<IActionResult> OnPostCancelAsync(int id)
+        {
+            try
+            {
+                var reservation = await _context.Reservations
+                    .Include(r => r.Room)
+                        .ThenInclude(room => room!.Hotel)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.Room != null && r.Room.Hotel != null && r.Room.Hotel.ManagerId == CurrentUserId);
+
+                if (reservation == null)
+                {
+                    ErrorMessage = "Rezervasyon bulunamadı veya bu rezervasyonu iptal etme yetkiniz yok.";
+                    return RedirectToPage();
+                }
+
+                reservation.Status = ReservationStatus.Cancelled;
+                reservation.CancelledAt = DateTime.UtcNow;
+                reservation.CancellationReason = "Otel yöneticisi tarafından iptal edildi.";
+                await _context.SaveChangesAsync();
+
+                Message = "Rezervasyon başarıyla iptal edildi.";
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Rezervasyon iptal edilirken hata oluştu: " + ex.Message;
+            }
+
+            return RedirectToPage();
+        }
+
+        // REZERVASYON SİLME
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             try
             {
-                await _context.Database.ExecuteSqlRawAsync(
-                    "DELETE FROM Reservations WHERE Id = {0}", id);
+                var reservation = await _context.Reservations
+                    .Include(r => r.Room)
+                        .ThenInclude(room => room!.Hotel)
+                    .FirstOrDefaultAsync(r => r.Id == id && r.Room != null && r.Room.Hotel != null && r.Room.Hotel.ManagerId == CurrentUserId);
 
-                Message = "Rezervasyon ba�ar�yla silindi.";
+                if (reservation == null)
+                {
+                    ErrorMessage = "Rezervasyon bulunamadı veya bu rezervasyonu silme yetkiniz yok.";
+                    return RedirectToPage();
+                }
+
+                _context.Reservations.Remove(reservation);
+                await _context.SaveChangesAsync();
+
+                Message = "Rezervasyon başarıyla silindi.";
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                ErrorMessage = "Rezervasyon silinirken hata olu�tu: " + ex.Message;
+                ErrorMessage = "Rezervasyon silinirken hata oluştu: " + ex.Message;
             }
 
             return RedirectToPage();

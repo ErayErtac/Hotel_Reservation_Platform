@@ -31,17 +31,39 @@ namespace HotelReservation.Web.Pages.Search
         [BindProperty(SupportsGet = true)]
         public int GuestCount { get; set; } = 1;
 
+        [BindProperty(SupportsGet = true)]
+        public decimal? MinPrice { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public decimal? MaxPrice { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int? MinRating { get; set; }
+
         public IList<AvailableRoomResult> Results { get; set; } = new List<AvailableRoomResult>();
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            // �lk a��l��ta parametre yoksa arama yapma
+            // İlk açılışta parametre yoksa arama yapma
             if (!CheckIn.HasValue || !CheckOut.HasValue || GuestCount <= 0)
                 return;
 
+            // Validation
+            if (CheckIn.Value.Date < DateTime.Today)
+            {
+                ModelState.AddModelError(nameof(CheckIn), "Giriş tarihi bugünden önce olamaz.");
+                return;
+            }
+
+            if (CheckOut.Value.Date <= CheckIn.Value.Date)
+            {
+                ModelState.AddModelError(nameof(CheckOut), "Çıkış tarihi giriş tarihinden sonra olmalıdır.");
+                return;
+            }
+
             var cityParam = string.IsNullOrWhiteSpace(City) ? null : City;
 
-            Results = _context.AvailableRoomResults
+            var results = await _context.AvailableRoomResults
                 .FromSqlRaw(
                     "EXEC dbo.sp_SearchAvailableRooms @City = {0}, @CheckIn = {1}, @CheckOut = {2}, @GuestCount = {3}",
                     cityParam,
@@ -49,7 +71,20 @@ namespace HotelReservation.Web.Pages.Search
                     CheckOut.Value.Date,
                     GuestCount
                 )
-                .ToList();
+                .ToListAsync();
+
+            // Client-side filtering for price
+            if (MinPrice.HasValue)
+            {
+                results = results.Where(r => r.PricePerNight >= MinPrice.Value).ToList();
+            }
+
+            if (MaxPrice.HasValue)
+            {
+                results = results.Where(r => r.PricePerNight <= MaxPrice.Value).ToList();
+            }
+
+            Results = results;
         }
     }
 }

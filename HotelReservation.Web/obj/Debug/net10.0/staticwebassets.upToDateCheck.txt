@@ -67,6 +67,9 @@ wwwroot\uploads\hotels\3\ea7646a1-8ff1-4b29-9493-dd531a729169.png
 wwwroot\uploads\hotels\5\0f6f845a-3605-454c-ab92-035b2e622ecd.png
 wwwroot\uploads\hotels\5\2e11743e-2e63-4de6-907f-38374c0a7c58.png
 wwwroot\uploads\hotels\5\331e650f-0db4-4189-b58d-a180b3e15834.png
+wwwroot\uploads\hotels\7\6f972825-f53b-4a6a-8a0d-c1cd2bb0de12.png
+wwwroot\uploads\hotels\7\80a0c42d-d59e-4b36-aeb0-a3c3742ab6a4.png
+wwwroot\uploads\hotels\7\ae72fae1-c920-4074-a9e0-81cf97d733cd.png
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\css\site.css
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\favicon.ico
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\js\site.js

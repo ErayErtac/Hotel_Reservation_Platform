@@ -26,6 +26,7 @@ else
                 <th>Kişi</th>
                 <th>Toplam Tutar</th>
                 <th>Durum</th>
+                <th>İşlemler</th>
             </tr>
         </thead>
         <tbody>
@@ -60,6 +61,12 @@ else
                         @if (isPast && r.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed)
                         {
                             @: <span class="badge bg-info ms-1">Tamamlandı</span>
+                        }
+                    </td>
+                    <td>
+                        @if (r.Status != HotelReservation.Core.Enums.ReservationStatus.Cancelled && !isPast && r.CheckIn.Date > DateTime.Today)
+                        {
+                            <a asp-page="/Customer/CancelReservation" asp-route-id="@r.ReservationId" class="btn btn-sm btn-danger">İptal Et</a>
                         }
                     </td>
                 </tr>
