@@ -1,12 +1,12 @@
+using HotelReservation.Core.Entities;
+using HotelReservation.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using HotelReservation.Core.Entities;
-using HotelReservation.Core.Enums;
-using HotelReservation.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Web.Pages.Manager.Reservations
 {
@@ -19,70 +19,43 @@ namespace HotelReservation.Web.Pages.Manager.Reservations
             _context = context;
         }
 
-        // Þimdilik demo otel yöneticisi
-        private int DemoManagerId => 2;
+        private int CurrentUserId =>
+                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<Reservation> Reservations { get; set; } = new List<Reservation>();
 
+        [TempData]
+        public string? Message { get; set; }
+
+        [TempData]
+        public string? ErrorMessage { get; set; }
+
         public async Task OnGetAsync()
         {
+            // Burada zaten manager'ýn otellerine baðlý rezervasyonlarý çekiyorsun varsayýyorum
             Reservations = await _context.Reservations
-                .Include(r => r.Room)
-                    .ThenInclude(room => room.Hotel)
+                .Include(r => r.Room).ThenInclude(r => r.Hotel)
                 .Include(r => r.Customer)
-                .Where(r => r.Room.Hotel.ManagerId == DemoManagerId)
+                .Where(r => r.Room.Hotel.ManagerId == CurrentUserId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostApproveAsync(int id)
+        // REZERVASYON SÝLME
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var reservation = await _context.Reservations
-                .Include(r => r.Room)
-                    .ThenInclude(room => room.Hotel)
-                .FirstOrDefaultAsync(r => r.Id == id && r.Room.Hotel.ManagerId == DemoManagerId);
-
-            if (reservation == null)
-                return NotFound();
-
-            if (reservation.Status == ReservationStatus.Cancelled)
+            try
             {
-                // Ýptal edilmiþ rezervasyon onaylanmasýn
-                TempData["ErrorMessage"] = "Ýptal edilmiþ bir rezervasyonu onaylayamazsýnýz.";
-                return RedirectToPage();
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Reservations WHERE Id = {0}", id);
+
+                Message = "Rezervasyon baþarýyla silindi.";
+            }
+            catch (System.Exception ex)
+            {
+                ErrorMessage = "Rezervasyon silinirken hata oluþtu: " + ex.Message;
             }
 
-            reservation.Status = ReservationStatus.Confirmed;
-
-            await _context.SaveChangesAsync();
-            // UPDATE trigger'ýmýz burada devreye giriyor ve ReservationAudit'e log yazýyor
-
-            TempData["SuccessMessage"] = "Rezervasyon baþarýyla onaylandý.";
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostCancelAsync(int id)
-        {
-            var reservation = await _context.Reservations
-                .Include(r => r.Room)
-                    .ThenInclude(room => room.Hotel)
-                .FirstOrDefaultAsync(r => r.Id == id && r.Room.Hotel.ManagerId == DemoManagerId);
-
-            if (reservation == null)
-                return NotFound();
-
-            if (reservation.Status == ReservationStatus.Cancelled)
-            {
-                TempData["ErrorMessage"] = "Rezervasyon zaten iptal edilmiþ.";
-                return RedirectToPage();
-            }
-
-            reservation.Status = ReservationStatus.Cancelled;
-
-            await _context.SaveChangesAsync();
-            // UPDATE trigger yine çalýþýp audit tablosuna kayýt atacak
-
-            TempData["SuccessMessage"] = "Rezervasyon iptal edildi.";
             return RedirectToPage();
         }
     }

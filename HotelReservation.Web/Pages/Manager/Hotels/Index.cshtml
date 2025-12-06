@@ -11,6 +11,16 @@
     <a asp-page="./Create" class="btn btn-primary">Yeni Otel Ekle</a>
 </p>
 
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger">@emsg</div>
+}
+
+
 @if (Model.Hotels == null || !Model.Hotels.Any())
 {
     <div class="alert alert-info">
@@ -53,6 +63,12 @@ else
                            class="btn btn-sm btn-outline-primary ms-1">
                             Fotoğrafları Yönet
                         </a>
+
+                        <form method="post" asp-page-handler="Delete" class="d-inline ms-1"
+                              onsubmit="return confirm('Bu oteli silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                            <input type="hidden" name="id" value="@h.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Otel Sil</button>
+                        </form>
                     </td>
 
                 </tr>

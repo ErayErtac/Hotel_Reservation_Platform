@@ -20,12 +20,16 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             _context = context;
         }
 
-        // Þimdilik demo otel yöneticisi (seed'deki manager Id'si)
-
         private int CurrentUserId =>
                 int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<Hotel> Hotels { get; set; } = new List<Hotel>();
+
+        [TempData]
+        public string? Message { get; set; }
+
+        [TempData]
+        public string? ErrorMessage { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -33,6 +37,35 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
                 .Where(h => h.ManagerId == CurrentUserId)
                 .OrderByDescending(h => h.CreatedAt)
                 .ToListAsync();
+        }
+
+
+        // OTEL SÝLME
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var hotel = await _context.Hotels
+                .Include(h => h.Rooms)
+                .FirstOrDefaultAsync(h => h.Id == id && h.ManagerId == CurrentUserId);
+
+            if (hotel == null)
+                return NotFound();
+
+            // Bu otele baðlý herhangi bir rezervasyon var mý?
+            bool hasReservations = await _context.Reservations
+                .AnyAsync(r => r.Room.HotelId == id);
+
+            if (hasReservations)
+            {
+                ErrorMessage = "Bu otele ait rezervasyonlar bulunduðu için otel silinemez.";
+            }
+            else
+            {
+                _context.Hotels.Remove(hotel);
+                await _context.SaveChangesAsync();
+                Message = "Otel baþarýyla silindi.";
+            }
+
+            return RedirectToPage();
         }
     }
 }

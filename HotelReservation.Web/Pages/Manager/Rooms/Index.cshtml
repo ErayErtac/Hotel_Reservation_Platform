@@ -5,6 +5,16 @@
     ViewData["Title"] = "Oda Yönetimi";
 }
 
+<!-- TempData mesajları burada -->
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger">@emsg</div>
+}
+
 @if (Model.Hotel == null)
 {
     <div class="alert alert-danger">Otel bulunamadı veya bu otele erişim izniniz yok.</div>
@@ -36,7 +46,7 @@ else
                     <th>Gecelik Fiyat</th>
                     <th>Açıklama</th>
                     <th>Aktif</th>
-                    <th>İşlemler</th>   
+                    <th>İşlemler</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,7 +60,6 @@ else
                         <td>@(r.IsActive ? "Evet" : "Hayır")</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <!-- Düzenleme -->
                                 <a asp-page="./Edit"
                                    asp-route-id="@r.Id"
                                    asp-route-hotelId="@Model.Hotel.Id"
@@ -58,7 +67,6 @@ else
                                     Düzenle
                                 </a>
 
-                                <!-- Detay -->
                                 <a asp-page="./Details"
                                    asp-route-id="@r.Id"
                                    asp-route-hotelId="@Model.Hotel.Id"
@@ -66,7 +74,6 @@ else
                                     Detay
                                 </a>
 
-                                <!-- Silme -->
                                 <form method="post"
                                       asp-page-handler="Delete"
                                       asp-route-id="@r.Id"

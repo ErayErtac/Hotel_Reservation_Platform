@@ -64,6 +64,9 @@ wwwroot\lib\jquery\LICENSE.txt
 wwwroot\uploads\hotels\3\b4b9fe10-beae-4ca4-a7ee-a0ff89a1ca2c.png
 wwwroot\uploads\hotels\3\bdda33c6-22b5-41d0-9a55-54e2b4e01865.png
 wwwroot\uploads\hotels\3\ea7646a1-8ff1-4b29-9493-dd531a729169.png
+wwwroot\uploads\hotels\5\0f6f845a-3605-454c-ab92-035b2e622ecd.png
+wwwroot\uploads\hotels\5\2e11743e-2e63-4de6-907f-38374c0a7c58.png
+wwwroot\uploads\hotels\5\331e650f-0db4-4189-b58d-a180b3e15834.png
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\css\site.css
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\favicon.ico
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\js\site.js
