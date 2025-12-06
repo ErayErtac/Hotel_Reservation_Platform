@@ -14,14 +14,21 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Admin", "AdminOnly");
     options.Conventions.AuthorizeFolder("/Manager", "ManagerOnly");
-    options.Conventions.AuthorizeFolder("/Customer", "CustomerOnly");
+    // Customer klasörü için klasör seviyesinde authorization yapmıyoruz, sayfa seviyesinde yapıyoruz
+    
+    // Customer sayfaları - sayfa bazlı authorization
+    options.Conventions.AuthorizePage("/Customer/MyReservations", "CustomerOrManager");
+    options.Conventions.AuthorizePage("/Customer/CancelReservation", "CustomerOrManager");
+    options.Conventions.AuthorizePage("/Customer/Profile", "CustomerOrManager");
+    options.Conventions.AuthorizePage("/Customer/BecomeManager", "CustomerOnly"); // Sadece Customer başvurabilir
 
-    // Giri� sayfas� herkese a��k
+    // Giriş ve erişim reddedildi sayfaları herkese açık
     options.Conventions.AllowAnonymousToPage("/Account/Login");
     options.Conventions.AllowAnonymousToPage("/Account/Register");
+    options.Conventions.AllowAnonymousToPage("/Account/AccessDenied");
 });
 
-// DbContext kayd�
+// DbContext kaydı
 builder.Services.AddDbContext<HotelDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("HotelConnection");
@@ -31,9 +38,9 @@ builder.Services.AddDbContext<HotelDbContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";       // giri� sayfas�
-        options.LogoutPath = "/Account/Logout";     // ��k�� sayfas�
-        options.AccessDeniedPath = "/Account/AccessDenied"; // (istersek yapar�z)
+        options.LoginPath = "/Account/Login";       // giriş sayfası
+        options.LogoutPath = "/Account/Logout";     // çıkış sayfası
+        options.AccessDeniedPath = "/Account/AccessDenied"; // (istersek yaparız)
     });
 
 builder.Services.AddAuthorization(options =>
@@ -46,12 +53,15 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("CustomerOnly", policy =>
         policy.RequireRole("Customer"));
+    
+    options.AddPolicy("CustomerOrManager", policy =>
+        policy.RequireRole("Customer", "HotelManager"));
 });
 
 
 var app = builder.Build();
 
-// SEED �A�RISI (scope a�arak)
+// SEED ÇAĞRISI (scope açarak)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();

@@ -1,4 +1,5 @@
 using System;
+using HotelReservation.Core.Enums;
 
 namespace HotelReservation.Core.Entities
 {

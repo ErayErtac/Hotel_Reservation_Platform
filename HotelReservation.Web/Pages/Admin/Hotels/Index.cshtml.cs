@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
 using HotelReservation.Core.Entities;
+using HotelReservation.Core.Enums;
 using HotelReservation.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HotelReservation.Web.Pages.Admin.Hotels
@@ -22,8 +21,11 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
 
         public IList<Hotel> Hotels { get; set; } = new List<Hotel>();
 
-        // Kaç otel onay bekliyor?
+        // KaÃ§ otel onay bekliyor?
         public int PendingCount { get; set; }
+        
+        // KaÃ§ otel yÃ¶neticisi baÅŸvurusu bekliyor?
+        public int PendingManagerApplicationsCount { get; set; }
 
         [TempData]
         public string? Message { get; set; }
@@ -37,16 +39,20 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
 
         public async Task OnGetAsync()
         {
-            // Toplam onay bekleyen sayýsý (her zaman lazým)
+            // Toplam onay bekleyen sayÄ±sÄ± (her zaman lazÄ±m)
             PendingCount = await _context.Hotels
                 .CountAsync(h => !h.IsApproved);
+            
+            // Bekleyen otel yÃ¶neticisi baÅŸvurularÄ±
+            PendingManagerApplicationsCount = await _context.ManagerApplications
+                .CountAsync(ma => ma.Status == ApplicationStatus.Pending);
 
             var query = _context.Hotels
                 .Include(h => h.Manager)
                 .OrderByDescending(h => h.CreatedAt)
                 .AsQueryable();
 
-            // Varsayýlan: sadece onay bekleyenleri göster
+            // VarsayÄ±lan: sadece onay bekleyenleri gÃ¶ster
             switch (StatusFilter?.ToLowerInvariant())
             {
                 case "approved":
@@ -78,13 +84,13 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
 
             if (hasReservations)
             {
-                ErrorMessage = "Bu otel için rezervasyon bulunduðu için silinemez.";
+                ErrorMessage = "Bu otel iÃ§in rezervasyon bulunduÄŸu iÃ§in silinemez.";
             }
             else
             {
                 _context.Hotels.Remove(hotel);
                 await _context.SaveChangesAsync();
-                Message = "Otel baþarýyla silindi.";
+                Message = "Otel baÅŸarÄ±yla silindi.";
             }
 
             return RedirectToPage();

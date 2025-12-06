@@ -15,7 +15,13 @@
         <form class="row g-3 hero-search-form" method="get" asp-page="/Search/Index">
             <div class="col-md-4">
                 <label class="form-label text-light">Şehir</label>
-                <input name="City" class="form-control" placeholder="İstanbul, Antalya, İzmir..." />
+                <select name="City" class="form-select">
+                    <option value="">Tüm Şehirler</option>
+                    @foreach (var city in Model.Cities)
+                    {
+                        <option value="@city">@city</option>
+                    }
+                </select>
             </div>
             <div class="col-md-3">
                 <label class="form-label text-light">Giriş</label>

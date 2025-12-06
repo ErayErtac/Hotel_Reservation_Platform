@@ -333,6 +333,49 @@ namespace HotelReservation.Data.Migrations
                     b.ToView("vw_HotelSummary", (string)null);
                 });
 
+            modelBuilder.Entity("HotelReservation.Core.Entities.ManagerApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ApprovedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ApprovedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("RejectedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedByUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ManagerApplications");
+                });
+
             modelBuilder.Entity("HotelReservation.Core.Entities.Reservation", b =>
                 {
                     b.Property<int>("Id")
@@ -532,6 +575,24 @@ namespace HotelReservation.Data.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("HotelReservation.Core.Entities.ManagerApplication", b =>
+                {
+                    b.HasOne("HotelReservation.Core.Entities.AppUser", "ApprovedByUser")
+                        .WithMany()
+                        .HasForeignKey("ApprovedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HotelReservation.Core.Entities.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApprovedByUser");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HotelReservation.Core.Entities.Reservation", b =>

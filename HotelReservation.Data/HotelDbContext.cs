@@ -218,6 +218,26 @@ namespace HotelReservation.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
+            // ManagerApplication
+            modelBuilder.Entity<ManagerApplication>(entity =>
+            {
+                entity.HasOne(ma => ma.User)
+                      .WithMany()
+                      .HasForeignKey(ma => ma.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(ma => ma.ApprovedByUser)
+                      .WithMany()
+                      .HasForeignKey(ma => ma.ApprovedByUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(ma => ma.RejectionReason)
+                      .HasMaxLength(500);
+
+                entity.Property(ma => ma.Notes)
+                      .HasMaxLength(1000);
+            });
+
         }
     }
 }

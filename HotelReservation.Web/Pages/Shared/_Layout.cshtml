@@ -48,9 +48,18 @@
                                 </li>
                             }
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Customer/MyReservations">Rezervasyonlarım</a>
-                            </li>
+                            @if (User.IsInRole("Customer") || User.IsInRole("HotelManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Customer/MyReservations">Rezervasyonlarım</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Customer/BecomeManager">Otel Yöneticisi Ol</a>
+                                </li>
+                            }
                         }
                     </ul>
 
@@ -62,7 +71,7 @@
                                     Merhaba, @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    @if (User.IsInRole("Customer"))
+                                    @if (User.IsInRole("Customer") || User.IsInRole("HotelManager"))
                                     {
                                         <li><a class="dropdown-item" asp-page="/Customer/Profile">Profilim</a></li>
                                     }
