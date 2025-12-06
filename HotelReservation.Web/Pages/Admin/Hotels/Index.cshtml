@@ -2,15 +2,48 @@
 @model HotelReservation.Web.Pages.Admin.Hotels.IndexModel
 
 @{
-    ViewData["Title"] = "Admin - Otel Özeti";
+    ViewData["Title"] = "Admin - Otel Yönetimi";
 }
 
-<h1>Admin - Otel Özeti</h1>
+<h1>Admin - Otel Yönetimi</h1>
+
+@if (Model.PendingCount > 0)
+{
+    <div class="alert alert-warning">
+        <strong>@Model.PendingCount</strong> adet
+        <strong>onay bekleyen otel</strong> bulunuyor.
+        Aşağıdaki listeden inceleyip onaylayabilirsiniz.
+    </div>
+}
+else
+{
+    <div class="alert alert-success">
+        Şu anda onay bekleyen otel bulunmuyor.
+    </div>
+}
+
+<div class="btn-group mb-3">
+    <a asp-page="./Index"
+       asp-route-statusFilter="pending"
+       class="btn btn-outline-warning @(Model.StatusFilter == "pending" ? "active" : "")">
+        Onay Bekleyen (@Model.PendingCount)
+    </a>
+    <a asp-page="./Index"
+       asp-route-statusFilter="approved"
+       class="btn btn-outline-success @(Model.StatusFilter == "approved" ? "active" : "")">
+        Onaylı Oteller
+    </a>
+    <a asp-page="./Index"
+       asp-route-statusFilter="all"
+       class="btn btn-outline-secondary @(Model.StatusFilter == "all" ? "active" : "")">
+        Tüm Oteller
+    </a>
+</div>
 
 @if (Model.Hotels == null || !Model.Hotels.Any())
 {
     <div class="alert alert-info">
-        Görüntülenecek otel bulunamadı.
+        Seçilen filtreye göre görüntülenecek otel bulunamadı.
     </div>
 }
 else
@@ -20,39 +53,41 @@ else
             <tr>
                 <th>Otel</th>
                 <th>Şehir</th>
-                <th>Oda Sayısı</th>
-                <th>Rezervasyon Sayısı</th>
-                <th>Toplam Gelir</th>
-                <th>Ortalama Puan</th>
+                <th>Yönetici</th>
+                <th>Onay Durumu</th>
+                <th>Oluşturulma</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var h in Model.Hotels)
-        {
-            <tr>
-                <td>@h.Name</td>
-                <td>@h.City</td>
-                <td>@h.RoomCount</td>
-                <td>@h.TotalReservations</td>
-                <td>@(h.TotalRevenue.HasValue ? h.TotalRevenue.Value.ToString("C") : "-")</td>
-                <td>
-                    @if (h.AverageRating.HasValue && h.AverageRating.Value > 0)
-                    {
-                        @h.AverageRating.Value.ToString("0.0") @: / 5
-                    }
-                    else
-                    {
-                        <span>Henüz yorum yok</span>
-                    }
-                </td>
-                <td>
-                    <a asp-page="./Details" asp-route-id="@h.HotelId" class="btn btn-sm btn-primary">
-                        Detay / Onay
-                    </a>
-                </td>
-            </tr>
-        }
+            @foreach (var h in Model.Hotels)
+            {
+                <tr class="@(h.IsApproved ? "" : "table-warning")">
+                    <td>@h.Name</td>
+                    <td>@h.City</td>
+                    <td>
+                        @h.Manager?.FullName
+                        <br />
+                        <small class="text-muted">@h.Manager?.Email</small>
+                    </td>
+                    <td>
+                        @if (h.IsApproved)
+                        {
+                            <span class="badge bg-success">Onaylı</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                        }
+                    </td>
+                    <td>@h.CreatedAt.ToLocalTime()</td>
+                    <td>
+                        <a asp-page="./Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary">
+                            İncele / Onayla
+                        </a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }

@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Linq;
 using System.Threading.Tasks;
 using HotelReservation.Core.Entities;
 using HotelReservation.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Web.Pages.Admin.Hotels
@@ -26,22 +26,26 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
         public string? Message { get; set; }
         public string? ErrorMessage { get; set; }
 
+        // Admin sayfasýnda kolay kullanmak için:
+        // Otel onay bekliyor mu?
+        public bool IsPendingApproval =>
+            Hotel != null && !Hotel.IsApproved;
+
         public async Task<IActionResult> OnGetAsync(int id)
         {
             Id = id;
 
-            Hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == id);
-            if (Hotel == null)
+            var ok = await LoadHotelAndStatsAsync(id);
+            if (!ok)
             {
                 return NotFound();
             }
 
-            // ÖNCE listeye çek, sonra FirstOrDefault yap
-            var statsList = await _context.HotelStatsResults
-                .FromSqlRaw("EXEC dbo.sp_GetHotelStats @HotelId = {0}", id)
-                .ToListAsync();
-
-            Stats = statsList.FirstOrDefault();
+            // Eðer önceki POST'tan gelen bir TempData mesajý varsa al
+            if (TempData.ContainsKey("AdminMessage"))
+            {
+                Message = TempData["AdminMessage"]?.ToString();
+            }
 
             return Page();
         }
@@ -56,23 +60,43 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC dbo.sp_ApproveHotel @HotelId = {0}", id);
 
-                Message = "Otel baþarýyla onaylandý.";
-
-                // Güncel durumu tekrar yükle
-                Hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Id == id);
-
-                var statsList = await _context.HotelStatsResults
-                    .FromSqlRaw("EXEC dbo.sp_GetHotelStats @HotelId = {0}", id)
-                    .ToListAsync();
-
-                Stats = statsList.FirstOrDefault();
+                // Redirect + TempData kullanmak, F5 ile tekrar POST olmasýný engeller (PRG pattern)
+                TempData["AdminMessage"] = "Otel baþarýyla onaylandý.";
+                return RedirectToPage(new { id });
             }
             catch (System.Exception ex)
             {
                 ErrorMessage = "Onay iþlemi sýrasýnda hata oluþtu: " + ex.Message;
-            }
 
-            return Page();
+                var ok = await LoadHotelAndStatsAsync(id);
+                if (!ok)
+                {
+                    return NotFound();
+                }
+
+                return Page();
+            }
+        }
+
+        // Ortak yükleme metodu: Hem GET hem POST sonrasý burayý kullanýyoruz
+        private async Task<bool> LoadHotelAndStatsAsync(int id)
+        {
+            Hotel = await _context.Hotels
+                .Include(h => h.Manager)   // yöneticiyi de görebil
+                .Include(h => h.Images)    // fotoðraflar
+                .Include(h => h.Rooms)     // odalar
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (Hotel == null)
+                return false;
+
+            var statsList = await _context.HotelStatsResults
+                .FromSqlRaw("EXEC dbo.sp_GetHotelStats @HotelId = {0}", id)
+                .ToListAsync();
+
+            Stats = statsList.FirstOrDefault();
+
+            return true;
         }
     }
 }

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +6,8 @@ using HotelReservation.Core.Entities;
 using HotelReservation.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.Web.Pages.Manager.Hotels
@@ -23,27 +23,31 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             _env = env;
         }
 
-        private int DemoManagerId => 2; // Manager Id (SSMS'ten gerekirse deðiþtir)
-
+        // URL'den veya hidden input'tan gelecek
         [BindProperty(SupportsGet = true)]
         public int HotelId { get; set; }
 
         public Hotel? Hotel { get; set; }
-        public IQueryable<HotelImage> Images { get; set; } = Enumerable.Empty<HotelImage>().AsQueryable();
+        public IQueryable<HotelImage> Images { get; set; } =
+            Enumerable.Empty<HotelImage>().AsQueryable();
 
         [BindProperty]
         public IFormFile[] UploadFiles { get; set; } = Array.Empty<IFormFile>();
 
+        // SAYFAYI AÇMA
         public async Task<IActionResult> OnGetAsync(int hotelId)
         {
             HotelId = hotelId;
 
+            // ÖNEMLÝ DÜZELTME:
+            // ManagerId filtrelemesini kaldýrýyoruz, sadece Id'ye göre oteli alýyoruz.
             Hotel = await _context.Hotels
                 .Include(h => h.Images)
-                .FirstOrDefaultAsync(h => h.Id == hotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == hotelId);
 
             if (Hotel == null)
             {
+                // Gerçek bir 404 ise kalsýn
                 return NotFound();
             }
 
@@ -52,12 +56,13 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             return Page();
         }
 
+        // FOTOÐRAF YÜKLEME
         public async Task<IActionResult> OnPostUploadAsync()
         {
-            // ayný sayfaya geri döndüðümüzde oteli tekrar yüklemek için
+            // HotelId hidden'dan geliyor
             Hotel = await _context.Hotels
                 .Include(h => h.Images)
-                .FirstOrDefaultAsync(h => h.Id == HotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == HotelId);
 
             if (Hotel == null)
             {
@@ -71,7 +76,8 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
                 return Page();
             }
 
-            var uploadsRootFolder = Path.Combine(_env.WebRootPath, "uploads", "hotels", HotelId.ToString());
+            var uploadsRootFolder = Path.Combine(
+                _env.WebRootPath, "uploads", "hotels", HotelId.ToString());
 
             if (!Directory.Exists(uploadsRootFolder))
             {
@@ -97,7 +103,7 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
                 {
                     HotelId = HotelId,
                     ImagePath = relativePath,
-                    IsMain = !Hotel.Images.Any(), // ilk resim ise ana yap
+                    IsMain = !Hotel.Images.Any(), // ilk resim ise ana foto
                     UploadedAt = DateTime.UtcNow
                 };
 
@@ -109,11 +115,12 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             return RedirectToPage(new { hotelId = HotelId });
         }
 
+        // ANA FOTOÐRAF YAP
         public async Task<IActionResult> OnPostSetMainAsync(int imageId)
         {
             Hotel = await _context.Hotels
                 .Include(h => h.Images)
-                .FirstOrDefaultAsync(h => h.Id == HotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == HotelId);
 
             if (Hotel == null)
             {
@@ -128,7 +135,7 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
 
             foreach (var img in Hotel.Images)
             {
-                img.IsMain = img.Id == imageId;
+                img.IsMain = (img.Id == imageId);
             }
 
             await _context.SaveChangesAsync();
@@ -136,11 +143,12 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             return RedirectToPage(new { hotelId = HotelId });
         }
 
+        // FOTOÐRAF SÝL
         public async Task<IActionResult> OnPostDeleteAsync(int imageId)
         {
             Hotel = await _context.Hotels
                 .Include(h => h.Images)
-                .FirstOrDefaultAsync(h => h.Id == HotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == HotelId);
 
             if (Hotel == null)
             {
@@ -154,7 +162,10 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             }
 
             // Dosyayý diskten sil
-            var fullPath = Path.Combine(_env.WebRootPath, image.ImagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+            var fullPath = Path.Combine(
+                _env.WebRootPath,
+                image.ImagePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+
             if (System.IO.File.Exists(fullPath))
             {
                 System.IO.File.Delete(fullPath);

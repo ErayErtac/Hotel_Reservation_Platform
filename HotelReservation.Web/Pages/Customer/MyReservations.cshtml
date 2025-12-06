@@ -31,7 +31,8 @@ else
         <tbody>
             @foreach (var r in Model.Reservations)
             {
-                <tr>
+                var isPast = r.CheckOut.Date < DateTime.Today;
+                <tr class="@(isPast ? "table-light" : "")">
                     <td>@r.HotelName</td>
                     <td>@r.City</td>
                     <td>@r.RoomNumber</td>
@@ -54,6 +55,11 @@ else
                             default:
                                 @:<span class="badge bg-light text-dark">Bilinmiyor</span>
                                 break;
+                        }
+
+                        @if (isPast && r.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed)
+                        {
+                            @: <span class="badge bg-info ms-1">Tamamlandı</span>
                         }
                     </td>
                 </tr>

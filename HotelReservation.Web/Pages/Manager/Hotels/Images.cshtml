@@ -27,6 +27,7 @@ else
                 </div>
                 <button type="submit" class="btn btn-primary">Yükle</button>
             </form>
+
         </div>
     </div>
 
@@ -43,7 +44,9 @@ else
             {
                 <div class="col-md-3">
                     <div class="card h-100">
-                        <img src="@img.ImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" />
+                        <img src="@img.ImagePath"
+                             class="card-img-top"
+                             style="object-fit: cover; height: 180px;" />
                         <div class="card-body">
                             @if (img.IsMain)
                             {
@@ -57,7 +60,9 @@ else
                             <form method="post" asp-page-handler="SetMain" class="d-inline">
                                 <input type="hidden" name="HotelId" value="@Model.Hotel.Id" />
                                 <input type="hidden" name="imageId" value="@img.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-primary" @(img.IsMain ? "disabled" : null)>
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-primary"
+                                        @(img.IsMain ? "disabled" : null)>
                                     Ana Yap
                                 </button>
                             </form>

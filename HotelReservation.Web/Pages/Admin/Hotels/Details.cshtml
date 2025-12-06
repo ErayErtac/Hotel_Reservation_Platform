@@ -7,21 +7,26 @@
 
 <a asp-page="./Index" class="btn btn-link">&larr; Otel listesine dön</a>
 
-@if (!string.IsNullOrEmpty(Model.Message))
-{
-    <div class="alert alert-success">@Model.Message</div>
-}
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">@Model.ErrorMessage</div>
-}
-
 @if (Model.Hotel == null)
 {
     <div class="alert alert-danger">Otel bulunamadı.</div>
 }
 else
 {
+    if (!Model.Hotel.IsApproved)
+    {
+        <div class="alert alert-warning">
+            <strong>Bu otel henüz onaylanmamış.</strong><br />
+            Bilgileri inceleyip aşağıdaki butonla onaylayabilirsiniz.
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success">
+            Bu otel <strong>onaylanmış</strong> ve müşterilere açık.
+        </div>
+    }
+
     <div class="row">
         <div class="col-md-6">
             <div class="card shadow-sm mb-3">
@@ -31,16 +36,17 @@ else
                     <p><strong>Adres:</strong> @Model.Hotel.Address</p>
                     <p><strong>Açıklama:</strong> @Model.Hotel.Description</p>
                     <p>
-                        <strong>Onay Durumu:</strong>
-                        @(Model.Hotel.IsApproved ? "Onaylı" : "Onaysız")
+                        <strong>Oluşturulma:</strong> @Model.Hotel.CreatedAt.ToLocalTime()
                     </p>
                     <p>
-                        <strong>Aktif:</strong>
-                        @(Model.Hotel.IsActive ? "Evet" : "Hayır")
+                        <strong>Otel Yöneticisi:</strong><br />
+                        @Model.Hotel.Manager?.FullName <br />
+                        <span class="text-muted">@Model.Hotel.Manager?.Email</span>
                     </p>
 
                     <form method="post" asp-page-handler="Approve" asp-route-id="@Model.Hotel.Id">
-                        <button type="submit" class="btn btn-success"
+                        <button type="submit"
+                                class="btn btn-success"
                                 @(Model.Hotel.IsApproved ? "disabled" : null)>
                             Oteli Onayla
                         </button>
@@ -50,44 +56,30 @@ else
         </div>
 
         <div class="col-md-6">
-            <h4>İstatistikler</h4>
-
-            @if (Model.Stats == null)
-            {
-                <div class="alert alert-info">
-                    Bu otel için istatistik bilgisi bulunamadı.
-                </div>
-            }
-            else
-            {
-                <table class="table table-bordered w-auto">
-                    <tr>
-                        <th>Oda Sayısı</th>
-                        <td>@Model.Stats.RoomCount</td>
-                    </tr>
-                    <tr>
-                        <th>Rezervasyon Sayısı</th>
-                        <td>@Model.Stats.ReservationCount</td>
-                    </tr>
-                    <tr>
-                        <th>Toplam Gelir</th>
-                        <td>@Model.Stats.TotalRevenue.ToString("C")</td>
-                    </tr>
-                    <tr>
-                        <th>Ortalama Puan</th>
-                        <td>
-                            @if (Model.Stats.AverageRating.HasValue && Model.Stats.AverageRating.Value > 0)
-                            {
-                                @Model.Stats.AverageRating.Value.ToString("0.0") @: / 5
-                            }
-                            else
-                            {
-                                <span>Henüz yorum yok</span>
-                            }
-                        </td>
-                    </tr>
-                </table>
-            }
+            <h4>Temel Bilgiler</h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Onay Durumu</span>
+                    <span>
+                        @if (Model.Hotel.IsApproved)
+                        {
+                            <span class="badge bg-success">Onaylı</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                        }
+                    </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Aktif</span>
+                    <span>@(Model.Hotel.IsActive ? "Evet" : "Hayır")</span>
+                </li>
+                <li class="list-group-item">
+                    Bu otelin odalarını ve resimlerini
+                    <strong>Otel Yöneticisi panelinden</strong> yönetebilirsiniz.
+                </li>
+            </ul>
         </div>
     </div>
 }

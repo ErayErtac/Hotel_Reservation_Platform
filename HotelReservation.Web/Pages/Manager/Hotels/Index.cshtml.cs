@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using HotelReservation.Core.Entities;
 using HotelReservation.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+
 
 namespace HotelReservation.Web.Pages.Manager.Hotels
 {
@@ -19,14 +21,16 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
         }
 
         // Þimdilik demo otel yöneticisi (seed'deki manager Id'si)
-        private int DemoManagerId => 2; // SSMS'ten kontrol edip gerekiyorsa deðiþtir
+
+        private int CurrentUserId =>
+                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<Hotel> Hotels { get; set; } = new List<Hotel>();
 
         public async Task OnGetAsync()
         {
             Hotels = await _context.Hotels
-                .Where(h => h.ManagerId == DemoManagerId)
+                .Where(h => h.ManagerId == CurrentUserId)
                 .OrderByDescending(h => h.CreatedAt)
                 .ToListAsync();
         }

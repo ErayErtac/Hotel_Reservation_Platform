@@ -1,9 +1,10 @@
+using HotelReservation.Core.Entities;
+using HotelReservation.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using HotelReservation.Core.Entities;
-using HotelReservation.Data;
 
 namespace HotelReservation.Web.Pages.Manager.Hotels
 {
@@ -16,7 +17,8 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
             _context = context;
         }
 
-        private int DemoManagerId => 2; // Burayý da ayný Id ile tut
+        private int CurrentUserId =>
+                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         [BindProperty]
         public Hotel Input { get; set; } = new Hotel();
@@ -37,7 +39,7 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
                 return Page();
             }
 
-            Input.ManagerId = DemoManagerId;
+            Input.ManagerId = CurrentUserId;
             Input.IsActive = true;
             Input.IsApproved = false;
             Input.CreatedAt = DateTime.UtcNow;

@@ -68,6 +68,12 @@ namespace HotelReservation.Data
                       .WithOne(i => i.Hotel)
                       .HasForeignKey(i => i.HotelId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                // 🔽 Hotels tablosundaki trigger'ı da bildir
+                entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("trg_Hotels_StatusHistory");
+                });
             });
 
             // Room
@@ -101,6 +107,14 @@ namespace HotelReservation.Data
                       .WithMany(room => room.Reservations)
                       .HasForeignKey(r => r.RoomId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                //EF Core'a bu tabloda trigger olduğunu söyle
+                entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("trg_Reservations_Insert_Audit");
+                    tb.HasTrigger("trg_Reservations_Update_Audit");
+                    tb.HasTrigger("trg_Reservations_Delete_Audit");
+                });
             });
 
             // HotelReview

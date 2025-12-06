@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HotelReservation.Web.Pages.Reservations
@@ -18,10 +19,12 @@ namespace HotelReservation.Web.Pages.Reservations
         _context = context;
     }
 
-    // Normalde login olan kullanicidan alacagiz, simdilik sabit bir musteri
-    private int DemoCustomerId => 4; // seed'deki "Mehmet Musteri" gibi dusun
+        // Normalde login olan kullanicidan alacagiz, simdilik sabit bir musteri
+        private int CurrentUserId =>
+                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-    [BindProperty(SupportsGet = true)]
+
+        [BindProperty(SupportsGet = true)]
     public int RoomId { get; set; }
 
     [BindProperty]
@@ -77,12 +80,12 @@ namespace HotelReservation.Web.Pages.Reservations
             command.CommandText = "dbo.sp_CreateReservation";
             command.CommandType = CommandType.StoredProcedure;
 
-            // Parametreler
-            var pCustomerId = new SqlParameter("@CustomerId", SqlDbType.Int)
+                // Parametreler
+        var pCustomerId = new SqlParameter("@CustomerId", SqlDbType.Int)
             {
-                Value = DemoCustomerId
+                Value = CurrentUserId
             };
-            var pRoomId = new SqlParameter("@RoomId", SqlDbType.Int)
+                var pRoomId = new SqlParameter("@RoomId", SqlDbType.Int)
             {
                 Value = RoomId
             };

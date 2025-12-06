@@ -42,13 +42,19 @@ else
                     <td>@(h.IsActive ? "Evet" : "Hayır")</td>
                     <td>@h.CreatedAt.ToLocalTime()</td>
                     <td>
-                        <a asp-page="/Manager/Rooms/Index" asp-route-hotelId="@h.Id" class="btn btn-sm btn-outline-secondary">
+                        <a asp-page="/Manager/Rooms/Index"
+                           asp-route-hotelId="@h.Id"
+                           class="btn btn-sm btn-outline-secondary">
                             Odaları Yönet
                         </a>
-                        <a asp-page="/Manager/Hotels/Images" asp-route-hotelId="@h.Id" class="btn btn-sm btn-outline-primary ms-1">
+
+                        <a asp-page="/Manager/Hotels/Images"
+                           asp-route-HotelId="@h.Id"
+                           class="btn btn-sm btn-outline-primary ms-1">
                             Fotoğrafları Yönet
                         </a>
                     </td>
+
                 </tr>
             }
         </tbody>

@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
 using HotelReservation.Core.Entities;
 using HotelReservation.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HotelReservation.Web.Pages.Manager.Rooms
 {
@@ -16,7 +17,8 @@ namespace HotelReservation.Web.Pages.Manager.Rooms
             _context = context;
         }
 
-        private int DemoManagerId => 2;
+        private int CurrentUserId =>
+                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         [BindProperty(SupportsGet = true)]
         public int HotelId { get; set; }
@@ -31,7 +33,7 @@ namespace HotelReservation.Web.Pages.Manager.Rooms
             HotelId = hotelId;
 
             Hotel = await _context.Hotels
-                .FirstOrDefaultAsync(h => h.Id == hotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == hotelId && h.ManagerId == CurrentUserId);
 
             if (Hotel == null)
             {
@@ -47,7 +49,7 @@ namespace HotelReservation.Web.Pages.Manager.Rooms
 
             // HotelId hidden'dan geliyor
             Hotel = await _context.Hotels
-                .FirstOrDefaultAsync(h => h.Id == HotelId && h.ManagerId == DemoManagerId);
+                .FirstOrDefaultAsync(h => h.Id == HotelId && h.ManagerId == CurrentUserId);
 
             if (Hotel == null)
             {

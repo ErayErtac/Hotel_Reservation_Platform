@@ -36,6 +36,7 @@ else
                     <th>Gecelik Fiyat</th>
                     <th>Açıklama</th>
                     <th>Aktif</th>
+                    <th>İşlemler</th>   
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +48,37 @@ else
                         <td>@r.PricePerNight.ToString("C")</td>
                         <td>@r.Description</td>
                         <td>@(r.IsActive ? "Evet" : "Hayır")</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <!-- Düzenleme -->
+                                <a asp-page="./Edit"
+                                   asp-route-id="@r.Id"
+                                   asp-route-hotelId="@Model.Hotel.Id"
+                                   class="btn btn-outline-secondary">
+                                    Düzenle
+                                </a>
+
+                                <!-- Detay -->
+                                <a asp-page="./Details"
+                                   asp-route-id="@r.Id"
+                                   asp-route-hotelId="@Model.Hotel.Id"
+                                   class="btn btn-outline-info">
+                                    Detay
+                                </a>
+
+                                <!-- Silme -->
+                                <form method="post"
+                                      asp-page-handler="Delete"
+                                      asp-route-id="@r.Id"
+                                      asp-route-hotelId="@Model.Hotel.Id"
+                                      onsubmit="return confirm('Bu odayı silmek istediğinize emin misiniz?');"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        Sil
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
