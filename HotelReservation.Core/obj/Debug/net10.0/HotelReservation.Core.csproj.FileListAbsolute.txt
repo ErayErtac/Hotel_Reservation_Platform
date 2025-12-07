@@ -36,4 +36,3 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\ob
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\refint\HotelReservation.Core.dll
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\HotelReservation.Core.pdb
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\ref\HotelReservation.Core.dll
-C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

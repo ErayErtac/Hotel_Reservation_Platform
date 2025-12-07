@@ -1,0 +1,202 @@
+@page
+@model HotelReservation.Web.Pages.Admin.Users.IndexModel
+
+@{
+    ViewData["Title"] = "Admin - Kullanıcı Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold mb-0">Kullanıcı Yönetimi</h1>
+    <a asp-page="/Admin/Hotels/Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Otel Yönetimine Dön
+    </a>
+</div>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm">
+        <i class="bi bi-check-circle me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+        <i class="bi bi-exclamation-triangle me-2"></i>@emsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Filtreleme ve Arama *@
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Ara</label>
+                <input asp-for="SearchTerm" type="text" class="form-control" placeholder="İsim veya E-posta..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Rol</label>
+                <select asp-for="RoleFilter" asp-items="Model.RoleList" class="form-select">
+                    <option value="">Tüm Roller</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Durum</label>
+                <select asp-for="StatusFilter" class="form-select">
+                    <option value="">Tüm Durumlar</option>
+                    <option value="active">Aktif</option>
+                    <option value="inactive">Pasif</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search me-2"></i>Ara
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Users == null || !Model.Users.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-person-x fs-1 text-primary mb-3"></i>
+        <h4 class="alert-heading">Kullanıcı bulunamadı</h4>
+        <p class="mb-0">Arama kriterlerinize uygun kullanıcı bulunamadı.</p>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Kullanıcı</th>
+                            <th>E-posta</th>
+                            <th>Rol</th>
+                            <th>Durum</th>
+                            <th>Kayıt Tarihi</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@user.FullName</div>
+                                    @if (user.Id == Model.CurrentUserId)
+                                    {
+                                        <small class="text-muted"><i class="bi bi-person-badge me-1"></i>Siz</small>
+                                    }
+                                </td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @switch (user.Role)
+                                    {
+                                        case HotelReservation.Core.Enums.UserRole.Admin:
+                                            <span class="badge bg-danger">Admin</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.UserRole.HotelManager:
+                                            <span class="badge bg-primary">Otel Yöneticisi</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.UserRole.Customer:
+                                            <span class="badge bg-success">Müşteri</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Pasif</span>
+                                    }
+                                </td>
+                                <td>
+                                    <small>@user.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-page="./Details" asp-route-id="@user.Id" class="btn btn-outline-primary" title="Detaylar">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        
+                                        @if (user.Id != Model.CurrentUserId)
+                                        {
+                                            <form method="post" asp-page-handler="ToggleStatus" class="d-inline">
+                                                <input type="hidden" name="id" value="@user.Id" />
+                                                <button type="submit" class="btn btn-outline-@(user.IsActive ? "warning" : "success")" 
+                                                        title="@(user.IsActive ? "Pasif Yap" : "Aktif Yap")"
+                                                        onclick="return confirm('Kullanıcı durumunu değiştirmek istediğinize emin misiniz?');">
+                                                    <i class="bi bi-@(user.IsActive ? "x-circle" : "check-circle")"></i>
+                                                </button>
+                                            </form>
+
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" title="Rol Değiştir">
+                                                    <i class="bi bi-person-gear"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <form method="post" asp-page-handler="ChangeRole" class="d-inline">
+                                                            <input type="hidden" name="id" value="@user.Id" />
+                                                            <input type="hidden" name="newRole" value="Customer" />
+                                                            <button type="submit" class="dropdown-item" 
+                                                                    onclick="return confirm('Kullanıcı rolünü Müşteri olarak değiştirmek istediğinize emin misiniz?');">
+                                                                <i class="bi bi-person me-2"></i>Müşteri
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" asp-page-handler="ChangeRole" class="d-inline">
+                                                            <input type="hidden" name="id" value="@user.Id" />
+                                                            <input type="hidden" name="newRole" value="HotelManager" />
+                                                            <button type="submit" class="dropdown-item"
+                                                                    onclick="return confirm('Kullanıcı rolünü Otel Yöneticisi olarak değiştirmek istediğinize emin misiniz?');">
+                                                                <i class="bi bi-building me-2"></i>Otel Yöneticisi
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    @if (user.Role != HotelReservation.Core.Enums.UserRole.Admin)
+                                                    {
+                                                        <li>
+                                                            <form method="post" asp-page-handler="ChangeRole" class="d-inline">
+                                                                <input type="hidden" name="id" value="@user.Id" />
+                                                                <input type="hidden" name="newRole" value="Admin" />
+                                                                <button type="submit" class="dropdown-item"
+                                                                        onclick="return confirm('Kullanıcı rolünü Admin olarak değiştirmek istediğinize emin misiniz?');">
+                                                                    <i class="bi bi-shield-check me-2"></i>Admin
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Kendi hesabınız</span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3 text-muted small">
+        <i class="bi bi-info-circle me-1"></i>
+        Toplam <strong>@Model.Users.Count</strong> kullanıcı bulundu.
+    </div>
+}
+

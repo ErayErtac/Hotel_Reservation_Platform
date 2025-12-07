@@ -1,0 +1,209 @@
+@page
+@model HotelReservation.Web.Pages.Admin.Users.DetailsModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Detayları";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold mb-0">Kullanıcı Detayları</h1>
+    <a asp-page="./Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Kullanıcı Listesine Dön
+    </a>
+</div>
+
+@if (Model.AppUser == null)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>Kullanıcı bulunamadı.
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @* Kullanıcı Bilgileri *@
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Kullanıcı Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted small">Ad Soyad</label>
+                        <div class="fw-semibold fs-5">@Model.AppUser.FullName</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">E-posta</label>
+                        <div>@Model.AppUser.Email</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Rol</label>
+                        <div>
+                            @switch (Model.AppUser.Role)
+                            {
+                                case HotelReservation.Core.Enums.UserRole.Admin:
+                                    <span class="badge bg-danger fs-6">Admin</span>
+                                    break;
+                                case HotelReservation.Core.Enums.UserRole.HotelManager:
+                                    <span class="badge bg-primary fs-6">Otel Yöneticisi</span>
+                                    break;
+                                case HotelReservation.Core.Enums.UserRole.Customer:
+                                    <span class="badge bg-success fs-6">Müşteri</span>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Durum</label>
+                        <div>
+                            @if (Model.AppUser.IsActive)
+                            {
+                                <span class="badge bg-success fs-6">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary fs-6">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Kayıt Tarihi</label>
+                        <div>@Model.AppUser.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy HH:mm")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* İstatistikler *@
+        <div class="col-md-8">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-primary">
+                        <div class="card-body text-center">
+                            <i class="bi bi-building fs-1 text-primary mb-2"></i>
+                            <h3 class="mb-0">@Model.HotelCount</h3>
+                            <small class="text-muted">Yönetilen Otel</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-success">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar-check fs-1 text-success mb-2"></i>
+                            <h3 class="mb-0">@Model.ReservationCount</h3>
+                            <small class="text-muted">Rezervasyon</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-warning">
+                        <div class="card-body text-center">
+                            <i class="bi bi-star fs-1 text-warning mb-2"></i>
+                            <h3 class="mb-0">@Model.ReviewCount</h3>
+                            <small class="text-muted">Yorum</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Yönetilen Oteller *@
+            @if (Model.AppUser.ManagedHotels != null && Model.AppUser.ManagedHotels.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-building me-2"></i>Yönetilen Oteller</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Otel Adı</th>
+                                        <th>Şehir</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var hotel in Model.AppUser.ManagedHotels)
+                                    {
+                                        <tr>
+                                            <td>@hotel.Name</td>
+                                            <td>@hotel.City</td>
+                                            <td>
+                                                @if (hotel.IsApproved)
+                                                {
+                                                    <span class="badge bg-success">Onaylı</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-page="/Admin/Hotels/Details" asp-route-id="@hotel.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Son Rezervasyonlar *@
+            @if (Model.AppUser.Reservations != null && Model.AppUser.Reservations.Any())
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Son Rezervasyonlar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Otel</th>
+                                        <th>Giriş</th>
+                                        <th>Çıkış</th>
+                                        <th>Durum</th>
+                                        <th>Tutar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var reservation in Model.AppUser.Reservations.OrderByDescending(r => r.CheckIn).Take(10))
+                                    {
+                                        <tr>
+                                            <td>@(reservation.Room?.Hotel?.Name ?? "Bilinmiyor")</td>
+                                            <td>@reservation.CheckIn.ToString("dd MMM yyyy")</td>
+                                            <td>@reservation.CheckOut.ToString("dd MMM yyyy")</td>
+                                            <td>
+                                                @switch (reservation.Status)
+                                                {
+                                                    case HotelReservation.Core.Enums.ReservationStatus.Pending:
+                                                        <span class="badge bg-warning text-dark">Beklemede</span>
+                                                        break;
+                                                    case HotelReservation.Core.Enums.ReservationStatus.Confirmed:
+                                                        <span class="badge bg-success">Onaylandı</span>
+                                                        break;
+                                                    case HotelReservation.Core.Enums.ReservationStatus.Cancelled:
+                                                        <span class="badge bg-secondary">İptal</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>@reservation.TotalPrice.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+

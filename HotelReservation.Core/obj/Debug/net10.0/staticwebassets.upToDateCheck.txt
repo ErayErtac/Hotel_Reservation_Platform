@@ -1,3 +1,0 @@
-wwwroot\background.png
-wwwroot\exampleJsInterop.js
-C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Core\wwwroot\exampleJsInterop.js

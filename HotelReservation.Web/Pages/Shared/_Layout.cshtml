@@ -36,7 +36,13 @@
                             if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Admin/Hotels/Index">Admin Paneli</a>
+                                    <a class="nav-link" asp-page="/Admin/Hotels/Index"><i class="bi bi-building me-1"></i>Otel Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Admin/Users/Index"><i class="bi bi-people me-1"></i>Kullanıcı Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Admin/ManagerApplications/Index"><i class="bi bi-person-workspace me-1"></i>Yönetici Başvuruları</a>
                                 </li>
                             }
                             else if (User.IsInRole("HotelManager"))
