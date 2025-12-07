@@ -1,0 +1,75 @@
+@page
+@model HotelReservation.Web.Pages.Manager.Rooms.EditModel
+
+@{
+    ViewData["Title"] = "Oda Düzenle";
+}
+
+@if (Model.Hotel == null || Model.Input == null)
+{
+    <div class="alert alert-danger">Oda bulunamadı veya bu odaya erişim izniniz yok.</div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Oda Düzenle</h1>
+            <p class="text-muted mb-0">@Model.Hotel.Name - @Model.Input.RoomNumber</p>
+        </div>
+        <a asp-page="./Index" asp-route-hotelId="@Model.HotelId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri Dön
+        </a>
+    </div>
+
+    <form method="post" class="row g-3">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="HotelId" />
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Oda No</label>
+            <input asp-for="Input.RoomNumber" class="form-control" />
+            <span asp-validation-for="Input.RoomNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label fw-semibold">Kapasite</label>
+            <input asp-for="Input.Capacity" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Input.Capacity" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Gecelik Fiyat</label>
+            <input asp-for="Input.PricePerNight" type="number" step="0.01" min="0" class="form-control" />
+            <span asp-validation-for="Input.PricePerNight" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Aktif Durumu</label>
+            <select asp-for="Input.IsActive" class="form-select">
+                <option value="true">Aktif</option>
+                <option value="false">Pasif</option>
+            </select>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label fw-semibold">Açıklama</label>
+            <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Input.Description" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-circle me-2"></i>Güncelle
+            </button>
+            <a asp-page="./Index" asp-route-hotelId="@Model.HotelId" class="btn btn-secondary btn-lg ms-2">
+                <i class="bi bi-x-circle me-2"></i>İptal
+            </a>
+        </div>
+    </form>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

@@ -14,7 +14,15 @@ namespace HotelReservation.Data
         public static void Seed(HotelDbContext context)
         {
             // Migration'lar uygulanmamışsa burayı atla
-            context.Database.Migrate();
+            try
+            {
+                context.Database.Migrate();
+            }
+            catch (Exception)
+            {
+                // Migration hatası varsa (pending changes gibi) devam et
+                // Migration'ı manuel olarak uygulayabilirsiniz: dotnet ef database update
+            }
 
             // Zaten kullanıcı varsa seed çalıştırma (bir kere çalışsın)
             if (context.Users.Any())

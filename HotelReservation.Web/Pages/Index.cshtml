@@ -9,6 +9,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         position: relative;
         overflow: hidden;
+        z-index: 1;
     }
     
     .hero-section::before {
@@ -77,6 +78,33 @@
     }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchType = document.getElementById('searchType');
+        const checkInDiv = document.getElementById('checkInDiv');
+        const checkOutDiv = document.getElementById('checkOutDiv');
+        const tourDateDiv = document.getElementById('tourDateDiv');
+        const guestCountDiv = document.getElementById('guestCountDiv');
+        const participantCountDiv = document.getElementById('participantCountDiv');
+
+        searchType.addEventListener('change', function() {
+            if (this.value === 'Tour') {
+                checkInDiv.style.display = 'none';
+                checkOutDiv.style.display = 'none';
+                guestCountDiv.style.display = 'none';
+                tourDateDiv.style.display = 'block';
+                participantCountDiv.style.display = 'block';
+            } else {
+                checkInDiv.style.display = 'block';
+                checkOutDiv.style.display = 'block';
+                guestCountDiv.style.display = 'block';
+                tourDateDiv.style.display = 'none';
+                participantCountDiv.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 <div class="hero-section mb-5">
     <div class="container">
         <div class="row align-items-center py-5">
@@ -102,9 +130,16 @@
             </div>
             <div class="col-lg-6">
                 <div class="search-card">
-                    <h4 class="mb-4 text-center fw-bold">Otel Ara</h4>
-                    <form method="get" asp-page="/Search/Index">
+                    <h4 class="mb-4 text-center fw-bold">Otel veya Tur Ara</h4>
+                    <form method="get" asp-page="/Search/Index" id="searchForm">
                         <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Arama Tipi</label>
+                                <select name="SearchType" id="searchType" class="form-select form-select-lg">
+                                    <option value="Hotel">Otel</option>
+                                    <option value="Tour">Tur</option>
+                                </select>
+                            </div>
                             <div class="col-12">
                                 <label class="form-label fw-semibold">Şehir</label>
                                 <select name="City" class="form-select form-select-lg">
@@ -114,22 +149,31 @@
                                         <option value="@city">@city</option>
                                     }
                                 </select>
+                                <small class="text-muted">Sadece şehir seçerek de arama yapabilirsiniz</small>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Giriş Tarihi</label>
+                            <div class="col-md-6" id="checkInDiv">
+                                <label class="form-label fw-semibold">Giriş Tarihi <small class="text-muted">(Opsiyonel)</small></label>
                                 <input name="CheckIn" type="date" class="form-control form-control-lg" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Çıkış Tarihi</label>
+                            <div class="col-md-6" id="checkOutDiv">
+                                <label class="form-label fw-semibold">Çıkış Tarihi <small class="text-muted">(Opsiyonel)</small></label>
                                 <input name="CheckOut" type="date" class="form-control form-control-lg" />
                             </div>
-                            <div class="col-12">
-                                <label class="form-label fw-semibold">Misafir Sayısı</label>
+                            <div class="col-md-6" id="tourDateDiv" style="display:none;">
+                                <label class="form-label fw-semibold">Tur Tarihi <small class="text-muted">(Opsiyonel)</small></label>
+                                <input name="TourDate" type="date" class="form-control form-control-lg" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="col-12" id="guestCountDiv">
+                                <label class="form-label fw-semibold">Misafir Sayısı <small class="text-muted">(Opsiyonel)</small></label>
                                 <input name="GuestCount" type="number" min="1" value="1" class="form-control form-control-lg" />
+                            </div>
+                            <div class="col-12" id="participantCountDiv" style="display:none;">
+                                <label class="form-label fw-semibold">Katılımcı Sayısı <small class="text-muted">(Opsiyonel)</small></label>
+                                <input name="ParticipantCount" type="number" min="1" value="1" class="form-control form-control-lg" />
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold">
-                                    <i class="bi bi-search me-2"></i>Otel Ara
+                                    <i class="bi bi-search me-2"></i>Ara
                                 </button>
                             </div>
                         </div>
@@ -155,16 +199,33 @@
         </div>
     }
 
-    @if (Model.FeaturedHotels != null && Model.FeaturedHotels.Any())
-    {
-        <div class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="fw-bold mb-2">Önerilen Oteller</h2>
-                    <p class="text-muted">En yüksek puanlı ve en çok tercih edilen otellerimiz</p>
-                </div>
-                <a asp-page="/Hotels/Index" class="btn btn-outline-primary">Tümünü Gör</a>
-            </div>
+    <div class="mb-4">
+        <ul class="nav nav-tabs" id="featuredTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="hotels-tab" data-bs-toggle="tab" data-bs-target="#hotels" type="button" role="tab">
+                    Oteller
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tours-tab" data-bs-toggle="tab" data-bs-target="#tours" type="button" role="tab">
+                    Turlar
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content" id="featuredTabsContent">
+        <div class="tab-pane fade show active" id="hotels" role="tabpanel">
+            @if (Model.FeaturedHotels != null && Model.FeaturedHotels.Any())
+            {
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-2">Önerilen Oteller</h2>
+                            <p class="text-muted">En yüksek puanlı ve en çok tercih edilen otellerimiz</p>
+                        </div>
+                        <a asp-page="/Hotels/Index" class="btn btn-outline-primary">Tümünü Gör</a>
+                    </div>
             
             <div class="row g-4">
                 @foreach (var hotel in Model.FeaturedHotels)
@@ -215,7 +276,87 @@
                 }
             </div>
         </div>
-    }
+            }
+            else
+            {
+                <div class="alert alert-info">Henüz önerilen otel bulunmuyor.</div>
+            }
+        </div>
+
+        <div class="tab-pane fade" id="tours" role="tabpanel">
+            @if (Model.FeaturedTours != null && Model.FeaturedTours.Any())
+            {
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-2">Önerilen Turlar</h2>
+                            <p class="text-muted">Yakın tarihli ve müsait turlarımız</p>
+                        </div>
+                        <a asp-page="/Tours/Index" class="btn btn-outline-primary">Tümünü Gör</a>
+                    </div>
+                    
+                    <div class="row g-4">
+                        @foreach (var tour in Model.FeaturedTours)
+                        {
+                            var avgRating = Model.GetTourAverageRating(tour);
+                            var mainImage = tour.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "/uploads/tours/default.jpg";
+                            var isAvailable = tour.CurrentBookings < tour.Capacity;
+                            
+                            <div class="col-md-6 col-lg-4">
+                                <div class="hotel-card card h-100">
+                                    <div class="position-relative">
+                                        <img src="@mainImage" class="hotel-image" alt="@tour.Name" onerror="this.src='https://via.placeholder.com/400x200?text=Tour'">
+                                        @if (avgRating.HasValue)
+                                        {
+                                            <div class="position-absolute top-0 end-0 m-3">
+                                                <span class="rating-badge">
+                                                    ⭐ @avgRating.Value.ToString("0.0")
+                                                </span>
+                                            </div>
+                                        }
+                                        @if (!isAvailable)
+                                        {
+                                            <div class="position-absolute top-0 start-0 m-3">
+                                                <span class="badge bg-danger">Dolu</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold">@tour.Name</h5>
+                                        <p class="text-muted mb-2">
+                                            <i class="bi bi-geo-alt"></i> @tour.City
+                                        </p>
+                                        <p class="text-muted small mb-2">
+                                            <i class="bi bi-calendar"></i> @tour.StartDate.ToShortDateString() - @tour.EndDate.ToShortDateString()
+                                        </p>
+                                        @if (!string.IsNullOrEmpty(tour.Description))
+                                        {
+                                            <p class="card-text small text-muted">
+                                                @(tour.Description.Length > 80 ? tour.Description.Substring(0, 80) + "..." : tour.Description)
+                                            </p>
+                                        }
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div>
+                                                <span class="text-muted small">Kişi Başı</span>
+                                                <div class="fw-bold text-primary">@tour.Price.ToString("C")</div>
+                                            </div>
+                                            <a asp-page="/Tours/Details" asp-route-id="@tour.Id" class="btn btn-primary btn-sm">
+                                                Detaylar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Henüz önerilen tur bulunmuyor.</div>
+            }
+        </div>
+    </div>
 
     <div class="mb-5">
         <h2 class="fw-bold mb-4 text-center">Neden Bizi Seçmelisiniz?</h2>

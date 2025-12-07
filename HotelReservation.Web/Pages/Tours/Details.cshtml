@@ -1,0 +1,143 @@
+@page
+@model HotelReservation.Web.Pages.Tours.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Tour?.Name ?? "Tur Detayları";
+}
+
+@if (Model.Tour == null)
+{
+    <div class="alert alert-danger">Tur bulunamadı.</div>
+}
+else
+{
+    var avgRating = Model.GetAverageRating();
+    var mainImage = Model.Tour.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "/uploads/tours/default.jpg";
+    var isAvailable = Model.IsAvailable();
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <a asp-page="./Index" class="btn btn-secondary mb-3">
+                    <i class="bi bi-arrow-left"></i> Turlara Dön
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <img src="@mainImage" class="card-img-top" style="height: 400px; object-fit: cover;" alt="@Model.Tour.Name" onerror="this.src='https://via.placeholder.com/800x400?text=Tour'">
+                    <div class="card-body">
+                        <h1 class="card-title">@Model.Tour.Name</h1>
+                        <p class="text-muted">
+                            <i class="bi bi-geo-alt"></i> @Model.Tour.City
+                        </p>
+                        @if (avgRating.HasValue)
+                        {
+                            <div class="mb-3">
+                                <span class="badge bg-primary" style="font-size: 1rem;">
+                                    ⭐ @avgRating.Value.ToString("0.0") / 5.0
+                                </span>
+                                <span class="text-muted ms-2">(@Model.Tour.Reviews?.Count ?? 0 yorum)</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Tour.Description))
+                        {
+                            <div class="mb-3">
+                                <h5>Açıklama</h5>
+                                <p>@Model.Tour.Description</p>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Tour.Itinerary))
+                        {
+                            <div class="mb-3">
+                                <h5>Tur Programı</h5>
+                                <p style="white-space: pre-line;">@Model.Tour.Itinerary</p>
+                            </div>
+                        }
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Başlangıç Tarihi:</strong> @Model.Tour.StartDate.ToLongDateString()
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Bitiş Tarihi:</strong> @Model.Tour.EndDate.ToLongDateString()
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Kapasite:</strong> @Model.Tour.CurrentBookings / @Model.Tour.Capacity kişi
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Durum:</strong>
+                                @if (isAvailable)
+                                {
+                                    <span class="badge bg-success">Müsait</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Dolu</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Tour.Reviews != null && Model.Tour.Reviews.Any())
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Yorumlar</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var review in Model.Tour.Reviews.OrderByDescending(r => r.CreatedAt))
+                            {
+                                <div class="border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <strong>@review.Customer?.FullName</strong>
+                                        <span class="badge bg-warning">@review.Rating ⭐</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(review.Comment))
+                                    {
+                                        <p class="mb-0">@review.Comment</p>
+                                    }
+                                    <small class="text-muted">@review.CreatedAt.ToLocalTime().ToShortDateString()</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h4 class="card-title">Rezervasyon</h4>
+                        <div class="mb-3">
+                            <h3 class="text-primary">@Model.Tour.Price.ToString("C")</h3>
+                            <small class="text-muted">Kişi başı</small>
+                        </div>
+                        @if (isAvailable)
+                        {
+                            <a asp-page="/TourBookings/Create" asp-route-tourId="@Model.Tour.Id" class="btn btn-primary w-100 btn-lg">
+                                Rezervasyon Yap
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary w-100 btn-lg" disabled>
+                                Tur Dolu
+                            </button>
+                        }
+                        <hr>
+                        <div class="small">
+                            <p><strong>Tur Yöneticisi:</strong> @Model.Tour.Manager?.FullName</p>
+                            <p><strong>Oluşturulma:</strong> @Model.Tour.CreatedAt.ToLocalTime().ToShortDateString()</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

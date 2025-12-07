@@ -1,0 +1,79 @@
+@page
+@model HotelReservation.Web.Pages.Manager.Tours.IndexModel
+
+@{
+    ViewData["Title"] = "Tur Yönetimi";
+}
+
+<h1>Tur Yönetimi</h1>
+
+<p>
+    <a asp-page="./Create" class="btn btn-primary">Yeni Tur Ekle</a>
+</p>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger">@emsg</div>
+}
+
+@if (Model.Tours == null || !Model.Tours.Any())
+{
+    <div class="alert alert-info">
+        Şu anda üzerinize kayıtlı tur bulunmuyor.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Tur Adı</th>
+                <th>Şehir</th>
+                <th>Başlangıç Tarihi</th>
+                <th>Bitiş Tarihi</th>
+                <th>Fiyat</th>
+                <th>Kapasite</th>
+                <th>Rezervasyon</th>
+                <th>Onay Durumu</th>
+                <th>Aktif</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.Tours)
+            {
+                <tr>
+                    <td>@t.Name</td>
+                    <td>@t.City</td>
+                    <td>@t.StartDate.ToShortDateString()</td>
+                    <td>@t.EndDate.ToShortDateString()</td>
+                    <td>@t.Price.ToString("C")</td>
+                    <td>@t.CurrentBookings / @t.Capacity</td>
+                    <td>
+                        <span class="badge @(t.CurrentBookings >= t.Capacity ? "bg-danger" : "bg-success")">
+                            @(t.CurrentBookings >= t.Capacity ? "Dolu" : "Müsait")
+                        </span>
+                    </td>
+                    <td>
+                        @(t.IsApproved ? "Onaylı" : "Onaysız (admin onayı gerekiyor)")
+                    </td>
+                    <td>@(t.IsActive ? "Evet" : "Hayır")</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <a asp-page="./Bookings" asp-route-tourId="@t.Id" class="btn btn-sm btn-outline-info ms-1">Rezervasyonlar</a>
+                        <form method="post" asp-page-handler="Delete" class="d-inline ms-1"
+                              onsubmit="return confirm('Bu turu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                            <input type="hidden" name="id" value="@t.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

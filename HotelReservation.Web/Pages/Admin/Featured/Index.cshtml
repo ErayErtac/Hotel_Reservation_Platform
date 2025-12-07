@@ -1,0 +1,211 @@
+@page
+@model HotelReservation.Web.Pages.Admin.Featured.IndexModel
+
+@{
+    ViewData["Title"] = "Önerilen İçerik Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-2">Önerilen İçerik Yönetimi</h1>
+        <p class="text-muted mb-0">Ana sayfada gösterilecek önerilen oteller ve turları yönetin</p>
+    </div>
+    <a asp-page="/Admin/Hotels/Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Geri Dön
+    </a>
+</div>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-building me-2"></i>Önerilen Oteller (@Model.FeaturedHotels.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.FeaturedHotels.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var hotel in Model.FeaturedHotels)
+                        {
+                            var avgRating = Model.GetAverageRating(hotel);
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">@hotel.Name</h6>
+                                    <small class="text-muted">@hotel.City</small>
+                                    @if (avgRating.HasValue)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">⭐ @avgRating.Value.ToString("0.0")</span>
+                                    }
+                                </div>
+                                <form method="post" asp-page-handler="ToggleHotel" class="d-inline">
+                                    <input type="hidden" name="hotelId" value="@hotel.Id" />
+                                    <input type="hidden" name="isFeatured" value="false" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-circle me-1"></i>Kaldır
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Henüz önerilen otel yok.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-airplane me-2"></i>Önerilen Turlar (@Model.FeaturedTours.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.FeaturedTours.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var tour in Model.FeaturedTours)
+                        {
+                            var avgRating = Model.GetAverageRating(tour);
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">@tour.Name</h6>
+                                    <small class="text-muted">@tour.City - @tour.StartDate.ToShortDateString()</small>
+                                    @if (avgRating.HasValue)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">⭐ @avgRating.Value.ToString("0.0")</span>
+                                    }
+                                </div>
+                                <form method="post" asp-page-handler="ToggleTour" class="d-inline">
+                                    <input type="hidden" name="tourId" value="@tour.Id" />
+                                    <input type="hidden" name="isFeatured" value="false" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-circle me-1"></i>Kaldır
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Henüz önerilen tur yok.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Tüm Oteller</h5>
+            </div>
+            <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                @if (Model.Hotels.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var hotel in Model.Hotels)
+                        {
+                            var avgRating = Model.GetAverageRating(hotel);
+                            var isFeatured = Model.FeaturedHotels.Any(h => h.Id == hotel.Id);
+                            
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">
+                                        @hotel.Name
+                                        @if (isFeatured)
+                                        {
+                                            <span class="badge bg-success ms-2">Önerilen</span>
+                                        }
+                                    </h6>
+                                    <small class="text-muted">@hotel.City</small>
+                                    @if (avgRating.HasValue)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">⭐ @avgRating.Value.ToString("0.0")</span>
+                                    }
+                                </div>
+                                @if (!isFeatured)
+                                {
+                                    <form method="post" asp-page-handler="ToggleHotel" class="d-inline">
+                                        <input type="hidden" name="hotelId" value="@hotel.Id" />
+                                        <input type="hidden" name="isFeatured" value="true" />
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-star me-1"></i>Önerilen Yap
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Henüz otel bulunmuyor.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Tüm Turlar</h5>
+            </div>
+            <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                @if (Model.Tours.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var tour in Model.Tours)
+                        {
+                            var avgRating = Model.GetAverageRating(tour);
+                            var isFeatured = Model.FeaturedTours.Any(t => t.Id == tour.Id);
+                            
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">
+                                        @tour.Name
+                                        @if (isFeatured)
+                                        {
+                                            <span class="badge bg-success ms-2">Önerilen</span>
+                                        }
+                                    </h6>
+                                    <small class="text-muted">@tour.City - @tour.StartDate.ToShortDateString()</small>
+                                    @if (avgRating.HasValue)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">⭐ @avgRating.Value.ToString("0.0")</span>
+                                    }
+                                </div>
+                                @if (!isFeatured)
+                                {
+                                    <form method="post" asp-page-handler="ToggleTour" class="d-inline">
+                                        <input type="hidden" name="tourId" value="@tour.Id" />
+                                        <input type="hidden" name="isFeatured" value="true" />
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-star me-1"></i>Önerilen Yap
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Henüz tur bulunmuyor.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

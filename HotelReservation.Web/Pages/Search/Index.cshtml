@@ -2,39 +2,63 @@
 @model HotelReservation.Web.Pages.Search.IndexModel
 
 @{
-    ViewData["Title"] = "Oda Arama (SP Test)";
+    ViewData["Title"] = "Otel ve Tur Arama";
 }
 
-<h1>Oda Arama (Stored Procedure Test)</h1>
+<h1>Otel ve Tur Arama</h1>
 
-<form method="get" class="mb-4">
+<form method="get" class="mb-4" id="searchForm">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Otel ve Oda Arama</h5>
+            <h5 class="mb-0">Arama</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Şehir</label>
-                    <input asp-for="City" class="form-control" placeholder="Antalya, İstanbul..." />
-                    <span asp-validation-for="City" class="text-danger"></span>
+                    <label class="form-label">Arama Tipi</label>
+                    <select asp-for="SearchType" id="searchType" class="form-select">
+                        <option value="Hotel">Otel</option>
+                        <option value="Tour">Tur</option>
+                    </select>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">Giriş Tarihi</label>
+                <div class="col-md-3">
+                    <label class="form-label">Şehir <small class="text-muted">(Zorunlu)</small></label>
+                    <select asp-for="City" class="form-select" required>
+                        <option value="">Şehir Seçin</option>
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                    <small class="text-muted">Sadece şehir seçerek de arama yapabilirsiniz</small>
+                </div>
+                <div class="col-md-2" id="checkInDiv">
+                    <label class="form-label">Giriş Tarihi <small class="text-muted">(Opsiyonel)</small></label>
                     <input asp-for="CheckIn" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                     <span asp-validation-for="CheckIn" class="text-danger"></span>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">Çıkış Tarihi</label>
+                <div class="col-md-2" id="checkOutDiv">
+                    <label class="form-label">Çıkış Tarihi <small class="text-muted">(Opsiyonel)</small></label>
                     <input asp-for="CheckOut" type="date" class="form-control" />
                     <span asp-validation-for="CheckOut" class="text-danger"></span>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">Kişi Sayısı</label>
-                    <input asp-for="GuestCount" type="number" min="1" class="form-control" />
+                <div class="col-md-2" id="tourDateDiv" style="display:none;">
+                    <label class="form-label">Tur Tarihi <small class="text-muted">(Opsiyonel)</small></label>
+                    <input asp-for="TourDate" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="TourDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-2" id="guestCountDiv">
+                    <label class="form-label">Kişi Sayısı <small class="text-muted">(Opsiyonel)</small></label>
+                    <input asp-for="GuestCount" type="number" min="1" class="form-control" placeholder="1" />
                     <span asp-validation-for="GuestCount" class="text-danger"></span>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2" id="participantCountDiv" style="display:none;">
+                    <label class="form-label">Katılımcı Sayısı <small class="text-muted">(Opsiyonel)</small></label>
+                    <input asp-for="ParticipantCount" type="number" min="1" class="form-control" placeholder="1" />
+                    <span asp-validation-for="ParticipantCount" class="text-danger"></span>
+                </div>
+                <div class="col-md-3" id="priceRangeDiv">
                     <label class="form-label">Fiyat Aralığı (Gecelik)</label>
                     <div class="input-group">
                         <input asp-for="MinPrice" type="number" min="0" step="0.01" class="form-control" placeholder="Min" />
@@ -53,7 +77,47 @@
     </div>
 </form>
 
-@if (Model.Results != null && Model.Results.Any())
+@if (Model.SearchType == "Tour" && Model.TourResults != null && Model.TourResults.Any())
+{
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>@Model.TourResults.Count tur bulundu</h5>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var tour in Model.TourResults)
+        {
+            var mainImage = tour.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "/uploads/tours/default.jpg";
+            var avgRating = tour.Reviews?.Any() == true ? tour.Reviews.Average(r => r.Rating) : (double?)null;
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="@mainImage" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@tour.Name" onerror="this.src='https://via.placeholder.com/400x200?text=Tour'">
+                    <div class="card-body">
+                        <h5 class="card-title">@tour.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@tour.City</h6>
+                        <p class="card-text small text-muted">
+                            @tour.StartDate.ToShortDateString() - @tour.EndDate.ToShortDateString()
+                        </p>
+                        @if (avgRating.HasValue)
+                        {
+                            <p class="mb-2">
+                                <span class="badge bg-warning">⭐ @avgRating.Value.ToString("0.0")</span>
+                            </p>
+                        }
+                        <div class="mb-2">
+                            <span class="badge bg-info me-1">@tour.CurrentBookings / @tour.Capacity kişi</span>
+                            <span class="badge bg-success">@tour.Price.ToString("C") / kişi</span>
+                        </div>
+                        <a asp-page="/Tours/Details" asp-route-id="@tour.Id" class="btn btn-primary btn-sm w-100">
+                            Detaylar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else if (Model.SearchType == "Hotel" && Model.Results != null && Model.Results.Any())
 {
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5>@Model.Results.Count sonuç bulundu</h5>
@@ -75,24 +139,77 @@
                             <span class="badge bg-success">@item.PricePerNight.ToString("C") / gece</span>
                         </div>
 
-                        <a asp-page="/Reservations/Create" 
-                           asp-route-roomId="@item.RoomId"
-                           asp-route-checkIn="@Model.CheckIn?.ToString("yyyy-MM-dd")"
-                           asp-route-checkOut="@Model.CheckOut?.ToString("yyyy-MM-dd")"
-                           asp-route-guestCount="@Model.GuestCount"
-                           class="btn btn-primary btn-sm">
-                            Rezervasyon Yap
-                        </a>
+                        @if (Model.CheckIn.HasValue && Model.CheckOut.HasValue)
+                        {
+                            <a asp-page="/Reservations/Create" 
+                               asp-route-roomId="@item.RoomId"
+                               asp-route-checkIn="@Model.CheckIn.Value.ToString("yyyy-MM-dd")"
+                               asp-route-checkOut="@Model.CheckOut.Value.ToString("yyyy-MM-dd")"
+                               asp-route-guestCount="@Model.GuestCount"
+                               class="btn btn-primary btn-sm">
+                                Rezervasyon Yap
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-page="/Reservations/Create" 
+                               asp-route-roomId="@item.RoomId"
+                               class="btn btn-primary btn-sm">
+                                Rezervasyon Yap
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
 }
-else if (HttpContext.Request.QueryString.HasValue)
+else if (HttpContext.Request.QueryString.HasValue && !string.IsNullOrWhiteSpace(Model.City))
 {
     <div class="alert alert-warning">
         <h5>Sonuç bulunamadı</h5>
-        <p>Kriterlere uygun müsait oda bulunamadı. Lütfen farklı tarih veya şehir deneyin.</p>
+        <p>Kriterlere uygun @(Model.SearchType == "Tour" ? "tur" : "müsait oda") bulunamadı. Lütfen farklı tarih veya şehir deneyin.</p>
     </div>
+}
+else if (HttpContext.Request.QueryString.HasValue && string.IsNullOrWhiteSpace(Model.City))
+{
+    <div class="alert alert-info">
+        <h5>Lütfen en azından şehir seçin</h5>
+        <p>Arama yapmak için en azından bir şehir girmeniz gerekmektedir.</p>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchType = document.getElementById('searchType');
+            const checkInDiv = document.getElementById('checkInDiv');
+            const checkOutDiv = document.getElementById('checkOutDiv');
+            const tourDateDiv = document.getElementById('tourDateDiv');
+            const guestCountDiv = document.getElementById('guestCountDiv');
+            const participantCountDiv = document.getElementById('participantCountDiv');
+            const priceRangeDiv = document.getElementById('priceRangeDiv');
+
+            function toggleSearchType() {
+                if (searchType.value === 'Tour') {
+                    checkInDiv.style.display = 'none';
+                    checkOutDiv.style.display = 'none';
+                    guestCountDiv.style.display = 'none';
+                    priceRangeDiv.style.display = 'none';
+                    tourDateDiv.style.display = 'block';
+                    participantCountDiv.style.display = 'block';
+                } else {
+                    checkInDiv.style.display = 'block';
+                    checkOutDiv.style.display = 'block';
+                    guestCountDiv.style.display = 'block';
+                    priceRangeDiv.style.display = 'block';
+                    tourDateDiv.style.display = 'none';
+                    participantCountDiv.style.display = 'none';
+                }
+            }
+
+            searchType.addEventListener('change', toggleSearchType);
+            toggleSearchType(); // İlk yüklemede
+        });
+    </script>
 }

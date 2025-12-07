@@ -1,0 +1,71 @@
+@page
+@model HotelReservation.Web.Pages.Manager.Tours.BookingsModel
+
+@{
+    ViewData["Title"] = "Tur Rezervasyonları";
+}
+
+<h1>Tur Rezervasyonları</h1>
+
+@if (Model.Tour != null)
+{
+    <div class="alert alert-info">
+        <strong>@Model.Tour.Name</strong> - @Model.Tour.City
+    </div>
+}
+
+<a asp-page="./Index" class="btn btn-secondary mb-3">Geri Dön</a>
+
+@if (Model.Bookings == null || !Model.Bookings.Any())
+{
+    <div class="alert alert-info">
+        Bu tur için henüz rezervasyon bulunmuyor.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Müşteri</th>
+                <th>Katılımcı Sayısı</th>
+                <th>Toplam Fiyat</th>
+                <th>Durum</th>
+                <th>Ödeme</th>
+                <th>Rezervasyon Tarihi</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.Bookings)
+            {
+                <tr>
+                    <td>@booking.Customer?.FullName</td>
+                    <td>@booking.ParticipantCount</td>
+                    <td>@booking.TotalPrice.ToString("C")</td>
+                    <td>
+                        <span class="badge @(booking.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed ? "bg-success" : booking.Status == HotelReservation.Core.Enums.ReservationStatus.Cancelled ? "bg-danger" : "bg-warning")">
+                            @booking.Status
+                        </span>
+                    </td>
+                    <td>@(booking.IsPaid ? "Ödendi" : "Ödenmedi")</td>
+                    <td>@booking.CreatedAt.ToLocalTime().ToShortDateString()</td>
+                    <td>
+                        @if (booking.Status == HotelReservation.Core.Enums.ReservationStatus.Pending)
+                        {
+                            <form method="post" asp-page-handler="Approve" class="d-inline">
+                                <input type="hidden" name="id" value="@booking.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">Onayla</button>
+                            </form>
+                            <form method="post" asp-page-handler="Cancel" class="d-inline ms-1">
+                                <input type="hidden" name="id" value="@booking.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">İptal Et</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

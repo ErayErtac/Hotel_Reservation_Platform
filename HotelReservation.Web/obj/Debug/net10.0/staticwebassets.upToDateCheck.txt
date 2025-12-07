@@ -73,6 +73,12 @@ wwwroot\uploads\hotels\7\ae72fae1-c920-4074-a9e0-81cf97d733cd.png
 wwwroot\uploads\hotels\8\1403530c-1b17-4b37-9814-ef156f9c6c13.png
 wwwroot\uploads\hotels\8\2d2be8c3-2bd6-431a-868c-70200207aed5.png
 wwwroot\uploads\hotels\8\dfa42dfe-3cc0-45cb-ad8e-9e20344653d3.png
+wwwroot\uploads\hotels\9\4357a976-19f8-4845-af6d-fc8829c825e6.avif
+wwwroot\uploads\hotels\9\51234f64-0f28-45c0-85bb-7a35926e5b54.jpg
+wwwroot\uploads\hotels\9\6bb9ccff-3a2a-4126-9209-419d74a639bf.avif
+wwwroot\uploads\hotels\9\853d863b-ab7f-44f9-90d0-d00b0965f67e.avif
+wwwroot\uploads\hotels\9\ad921ffc-d8e3-4974-bb17-43bcd05b041e.avif
+wwwroot\uploads\hotels\9\b096e117-adca-4f60-b235-c2e8a8aa89ed.avif
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\wwwroot\lib\jquery\dist\jquery.slim.min.js

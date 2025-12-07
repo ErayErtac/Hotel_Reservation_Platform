@@ -23,6 +23,7 @@ namespace HotelReservation.Web.Pages.Customer
                 int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<CustomerReservationResult> Reservations { get; set; } = new List<CustomerReservationResult>();
+        public IList<TourBooking> TourBookings { get; set; } = new List<TourBooking>();
         public Dictionary<int, int> ReservationHotelIds { get; set; } = new Dictionary<int, int>(); // ReservationId -> HotelId
 
         public async Task OnGetAsync()
@@ -34,6 +35,13 @@ namespace HotelReservation.Web.Pages.Customer
             Reservations = list
                 .OrderByDescending(r => r.CheckIn)
                 .ToList();
+
+            // Tur rezervasyonlarını al
+            TourBookings = await _context.TourBookings
+                .Include(tb => tb.Tour)
+                .Where(tb => tb.CustomerId == CurrentUserId)
+                .OrderByDescending(tb => tb.CreatedAt)
+                .ToListAsync();
 
             // Her rezervasyon için HotelId'yi al
             var reservationIds = Reservations.Select(r => r.ReservationId).ToList();

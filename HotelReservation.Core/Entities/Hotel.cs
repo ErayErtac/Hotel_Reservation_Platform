@@ -15,6 +15,7 @@ namespace HotelReservation.Core.Entities
 
         public bool IsApproved { get; set; } = false; // Admin onayı
         public bool IsActive { get; set; } = true;
+        public bool IsFeatured { get; set; } = false; // Ana sayfada önerilen olarak gösterilsin mi
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

@@ -1,0 +1,117 @@
+@page
+@model HotelReservation.Web.Pages.Tours.IndexModel
+
+@{
+    ViewData["Title"] = "Turlar";
+}
+
+<h1 class="mb-4">Turlar</h1>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Şehir</label>
+        <input type="text" name="city" class="form-control" value="@Model.SearchCity" placeholder="Şehir ara..." />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Tur Tarihi</label>
+        <input type="date" name="tourDate" class="form-control" value="@(Model.SearchDate?.ToString("yyyy-MM-dd"))" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">&nbsp;</label>
+        <button type="submit" class="btn btn-primary w-100">Ara</button>
+    </div>
+</form>
+
+@if (Model.Tours == null || !Model.Tours.Any())
+{
+    <div class="alert alert-info">
+        Aradığınız kriterlere uygun tur bulunamadı.
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var tour in Model.Tours)
+        {
+            var avgRating = Model.GetAverageRating(tour);
+            var mainImage = tour.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "/uploads/tours/default.jpg";
+            var isAvailable = tour.CurrentBookings < tour.Capacity;
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 hotel-card">
+                    <div class="position-relative">
+                        <img src="@mainImage" class="card-img-top hotel-image" alt="@tour.Name" onerror="this.src='https://via.placeholder.com/400x200?text=Tour'">
+                        @if (avgRating.HasValue)
+                        {
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="rating-badge">
+                                    ⭐ @avgRating.Value.ToString("0.0")
+                                </span>
+                            </div>
+                        }
+                        @if (!isAvailable)
+                        {
+                            <div class="position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-danger">Dolu</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@tour.Name</h5>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-geo-alt"></i> @tour.City
+                        </p>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-calendar"></i> @tour.StartDate.ToShortDateString() - @tour.EndDate.ToShortDateString()
+                        </p>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-people"></i> @tour.CurrentBookings / @tour.Capacity kişi
+                        </p>
+                        @if (!string.IsNullOrEmpty(tour.Description))
+                        {
+                            <p class="card-text small text-muted">
+                                @(tour.Description.Length > 100 ? tour.Description.Substring(0, 100) + "..." : tour.Description)
+                            </p>
+                        }
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="text-muted small">Kişi Başı</span>
+                                <div class="fw-bold text-primary">@tour.Price.ToString("C")</div>
+                            </div>
+                            <a asp-page="./Details" asp-route-id="@tour.Id" class="btn btn-primary btn-sm">
+                                Detaylar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Sayfa navigasyonu" class="mt-4">
+            <ul class="pagination justify-content-center">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.CurrentPage - 1)&city=@Model.SearchCity&tourDate=@(Model.SearchDate?.ToString("yyyy-MM-dd"))">Önceki</a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="?page=@i&city=@Model.SearchCity&tourDate=@(Model.SearchDate?.ToString("yyyy-MM-dd"))">@i</a>
+                    </li>
+                }
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.CurrentPage + 1)&city=@Model.SearchCity&tourDate=@(Model.SearchDate?.ToString("yyyy-MM-dd"))">Sonraki</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+

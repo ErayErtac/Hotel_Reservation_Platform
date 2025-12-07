@@ -42,6 +42,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Admin/Featured/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRmVhdHVyZWRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Admin/Hotels/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cSG90ZWxzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -126,8 +130,32 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxSb29tc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Rooms/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxSb29tc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Rooms/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxSb29tc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Rooms/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxSb29tc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Bookings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xCb29raW5ncy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Privacy.cshtml]
@@ -148,6 +176,22 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/TourBookings/Confirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG91ckJvb2tpbmdzXENvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/TourBookings/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG91ckJvb2tpbmdzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Tours/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG91cnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Tours/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVG91cnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/_ViewImports.cshtml]

@@ -23,7 +23,10 @@ namespace HotelReservation.Core.Entities
 
         // Navigation Properties
         public ICollection<Hotel> ManagedHotels { get; set; } = new List<Hotel>();
+        public ICollection<Tour> ManagedTours { get; set; } = new List<Tour>();
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public ICollection<TourBooking> TourBookings { get; set; } = new List<TourBooking>();
         public ICollection<HotelReview> Reviews { get; set; } = new List<HotelReview>();
+        public ICollection<TourReview> TourReviews { get; set; } = new List<TourReview>();
     }
 }

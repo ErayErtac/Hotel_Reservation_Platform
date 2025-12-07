@@ -1,0 +1,53 @@
+@page
+@model HotelReservation.Web.Pages.TourBookings.ConfirmationModel
+
+@{
+    ViewData["Title"] = "Rezervasyon Onayı";
+}
+
+@if (Model.Booking == null)
+{
+    <div class="alert alert-danger">Rezervasyon bulunamadı.</div>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card text-center">
+                    <div class="card-body py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <h1 class="card-title mb-4">Rezervasyonunuz Alındı!</h1>
+                        <p class="lead mb-4">Rezervasyon numaranız: <strong>#@Model.Booking.Id</strong></p>
+
+                        <div class="card bg-light mb-4">
+                            <div class="card-body text-start">
+                                <h5 class="card-title">Rezervasyon Detayları</h5>
+                                <hr>
+                                <p><strong>Tur:</strong> @Model.Booking.Tour?.Name</p>
+                                <p><strong>Şehir:</strong> @Model.Booking.Tour?.City</p>
+                                <p><strong>Başlangıç:</strong> @Model.Booking.Tour?.StartDate.ToLongDateString()</p>
+                                <p><strong>Bitiş:</strong> @Model.Booking.Tour?.EndDate.ToLongDateString()</p>
+                                <p><strong>Katılımcı Sayısı:</strong> @Model.Booking.ParticipantCount</p>
+                                <p><strong>Toplam Fiyat:</strong> <span class="text-primary fw-bold">@Model.Booking.TotalPrice.ToString("C")</span></p>
+                                <p><strong>Durum:</strong> 
+                                    <span class="badge @(Model.Booking.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed ? "bg-success" : "bg-warning")">
+                                        @Model.Booking.Status
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a asp-page="/Customer/MyReservations" class="btn btn-primary">Rezervasyonlarımı Görüntüle</a>
+                            <a asp-page="/Tours/Index" class="btn btn-outline-secondary">Başka Tur Ara</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -57,21 +57,25 @@
     </a>
 </div>
 
-@if (Model.Reservations == null || !Model.Reservations.Any())
+@if ((Model.Reservations == null || !Model.Reservations.Any()) && (Model.TourBookings == null || !Model.TourBookings.Any()))
 {
     <div class="text-center py-5">
         <div class="mb-4">
             <i class="bi bi-calendar-x" style="font-size: 5rem; color: #dee2e6;"></i>
         </div>
         <h3 class="text-muted">Henüz rezervasyonunuz yok</h3>
-        <p class="text-muted mb-4">İlk rezervasyonunuzu yapmak için otel aramaya başlayın.</p>
+        <p class="text-muted mb-4">İlk rezervasyonunuzu yapmak için otel veya tur aramaya başlayın.</p>
         <a asp-page="/Search/Index" class="btn btn-primary btn-lg">
-            <i class="bi bi-search me-2"></i>Otel Ara
+            <i class="bi bi-search me-2"></i>Ara
         </a>
     </div>
 }
 else
 {
+    @if (Model.Reservations != null && Model.Reservations.Any())
+    {
+        <h3 class="mb-3">Otel Rezervasyonlarım</h3>
+    }
     <div class="row">
         @foreach (var r in Model.Reservations)
         {
@@ -180,4 +184,88 @@ else
             </div>
         }
     </div>
+    }
+
+    @if (Model.TourBookings != null && Model.TourBookings.Any())
+    {
+        <h3 class="mb-3 mt-5">Tur Rezervasyonlarım</h3>
+        <div class="row">
+            @foreach (var tb in Model.TourBookings)
+            {
+                var isPast = tb.Tour?.EndDate.Date < DateTime.Today;
+                var isUpcoming = tb.Tour?.StartDate.Date > DateTime.Today;
+                
+                <div class="col-12">
+                    <div class="reservation-card card @(isPast ? "bg-light" : "")">
+                        <div class="reservation-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0 fw-bold">@tb.Tour?.Name</h5>
+                                    <small class="opacity-75">
+                                        <i class="bi bi-geo-alt me-1"></i>@tb.Tour?.City
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    @switch (tb.Status)
+                                    {
+                                        case HotelReservation.Core.Enums.ReservationStatus.Pending:
+                                            <span class="status-badge bg-warning text-dark">Beklemede</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.ReservationStatus.Confirmed:
+                                            <span class="status-badge bg-success text-white">Onaylandı</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.ReservationStatus.Cancelled:
+                                            <span class="status-badge bg-secondary text-white">İptal</span>
+                                            break;
+                                    }
+                                    @if (isPast && tb.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed)
+                                    {
+                                        <div class="mt-1">
+                                            <span class="status-badge bg-info text-white">Tamamlandı</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reservation-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <i class="bi bi-calendar-check"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Başlangıç Tarihi</small>
+                                            <strong>@tb.Tour?.StartDate.ToString("dd MMMM yyyy")</strong>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="bi bi-calendar-x"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Bitiş Tarihi</small>
+                                            <strong>@tb.Tour?.EndDate.ToString("dd MMMM yyyy")</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <i class="bi bi-people"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Katılımcı Sayısı</small>
+                                            <strong>@tb.ParticipantCount kişi</strong>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="bi bi-cash-coin"></i>
+                                        <div>
+                                            <small class="text-muted d-block">Toplam Tutar</small>
+                                            <strong class="text-primary fs-5">@tb.TotalPrice.ToString("C")</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 }

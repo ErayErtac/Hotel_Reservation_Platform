@@ -28,6 +28,10 @@ namespace HotelReservation.Data
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
         public DbSet<ManagerApplication> ManagerApplications { get; set; }
         public DbSet<ReviewReply> ReviewReplies { get; set; }
+        public DbSet<Tour> Tours { get; set; }
+        public DbSet<TourBooking> TourBookings { get; set; }
+        public DbSet<TourImage> TourImages { get; set; }
+        public DbSet<TourReview> TourReviews { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -260,6 +264,84 @@ namespace HotelReservation.Data
 
                 entity.Property(ma => ma.Notes)
                       .HasMaxLength(1000);
+            });
+
+            // Tour
+            modelBuilder.Entity<Tour>(entity =>
+            {
+                entity.Property(t => t.Name)
+                      .IsRequired()
+                      .HasMaxLength(150);
+
+                entity.Property(t => t.City)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(t => t.Price)
+                      .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(t => t.Manager)
+                      .WithMany(u => u.ManagedTours)
+                      .HasForeignKey(t => t.ManagerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(t => t.Images)
+                      .WithOne(i => i.Tour)
+                      .HasForeignKey(i => i.TourId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // TourBooking
+            modelBuilder.Entity<TourBooking>(entity =>
+            {
+                entity.Property(tb => tb.TotalPrice)
+                      .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(tb => tb.Customer)
+                      .WithMany(u => u.TourBookings)
+                      .HasForeignKey(tb => tb.CustomerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(tb => tb.Tour)
+                      .WithMany(t => t.Bookings)
+                      .HasForeignKey(tb => tb.TourId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // TourImage
+            modelBuilder.Entity<TourImage>(entity =>
+            {
+                entity.Property(i => i.ImagePath)
+                      .IsRequired()
+                      .HasMaxLength(500);
+
+                entity.Property(i => i.UploadedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+            });
+
+            // TourReview
+            modelBuilder.Entity<TourReview>(entity =>
+            {
+                entity.Property(tr => tr.Rating)
+                      .IsRequired();
+
+                entity.Property(tr => tr.Comment)
+                      .HasMaxLength(1000);
+
+                entity.HasOne(tr => tr.Tour)
+                      .WithMany(t => t.Reviews)
+                      .HasForeignKey(tr => tr.TourId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(tr => tr.Customer)
+                      .WithMany(u => u.TourReviews)
+                      .HasForeignKey(tr => tr.CustomerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(tr => tr.TourBooking)
+                      .WithMany()
+                      .HasForeignKey(tr => tr.TourBookingId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
 
         }

@@ -1,0 +1,77 @@
+@page
+@model HotelReservation.Web.Pages.TourBookings.CreateModel
+
+@{
+    ViewData["Title"] = "Tur Rezervasyonu";
+}
+
+@if (Model.Tour == null)
+{
+    <div class="alert alert-danger">Tur bulunamadı.</div>
+}
+else
+{
+    <div class="container">
+        <h1 class="mb-4">Tur Rezervasyonu</h1>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3>@Model.Tour.Name</h3>
+                        <p class="text-muted">
+                            <i class="bi bi-geo-alt"></i> @Model.Tour.City
+                        </p>
+                        <p>
+                            <strong>Başlangıç:</strong> @Model.Tour.StartDate.ToLongDateString()<br>
+                            <strong>Bitiş:</strong> @Model.Tour.EndDate.ToLongDateString()
+                        </p>
+                        <p><strong>Fiyat:</strong> @Model.Tour.Price.ToString("C") (Kişi başı)</p>
+                        <p><strong>Müsait Kontenjan:</strong> @(Model.Tour.Capacity - Model.Tour.CurrentBookings) / @Model.Tour.Capacity</p>
+                    </div>
+                </div>
+
+                <form method="post" class="card">
+                    <div class="card-header">
+                        <h5>Rezervasyon Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Katılımcı Sayısı</label>
+                            <input asp-for="ParticipantCount" type="number" min="1" max="@(Model.Tour.Capacity - Model.Tour.CurrentBookings)" class="form-control" />
+                            <span asp-validation-for="ParticipantCount" class="text-danger"></span>
+                            <small class="text-muted">Maksimum @(Model.Tour.Capacity - Model.Tour.CurrentBookings) kişi</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Toplam Fiyat</label>
+                            <div class="form-control-plaintext">
+                                <h4 class="text-primary" id="totalPrice">@((Model.Tour.Price * Model.ParticipantCount).ToString("C"))</h4>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Rezervasyon Yap</button>
+                            <a asp-page="/Tours/Details" asp-route-id="@Model.Tour.Id" class="btn btn-secondary">İptal</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('ParticipantCount').addEventListener('input', function() {
+            const count = parseInt(this.value) || 1;
+            const pricePerPerson = @Model.Tour?.Price ?? 0;
+            const total = count * pricePerPerson;
+            document.getElementById('totalPrice').textContent = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(total);
+        });
+    </script>
+}
+

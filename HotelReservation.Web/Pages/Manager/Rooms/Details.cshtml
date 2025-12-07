@@ -1,0 +1,168 @@
+@page
+@model HotelReservation.Web.Pages.Manager.Rooms.DetailsModel
+
+@{
+    ViewData["Title"] = "Oda Detayları";
+}
+
+@if (Model.Room == null || Model.Hotel == null)
+{
+    <div class="alert alert-danger">Oda bulunamadı veya bu odaya erişim izniniz yok.</div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Oda Detayları</h1>
+            <p class="text-muted mb-0">@Model.Hotel.Name - @Model.Room.RoomNumber</p>
+        </div>
+        <div>
+            <a asp-page="./Edit" asp-route-id="@Model.Room.Id" asp-route-hotelId="@Model.HotelId" class="btn btn-primary">
+                <i class="bi bi-pencil me-2"></i>Düzenle
+            </a>
+            <a asp-page="./Index" asp-route-hotelId="@Model.HotelId" class="btn btn-outline-secondary ms-2">
+                <i class="bi bi-arrow-left me-2"></i>Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Oda Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Oda Numarası:</strong>
+                            <p class="mb-0 fs-5">@Model.Room.RoomNumber</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Kapasite:</strong>
+                            <p class="mb-0 fs-5">@Model.Room.Capacity kişi</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Gecelik Fiyat:</strong>
+                            <p class="mb-0 fs-4 text-primary fw-bold">@Model.Room.PricePerNight.ToString("C")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Durum:</strong>
+                            <p class="mb-0">
+                                @if (Model.Room.IsActive)
+                                {
+                                    <span class="badge bg-success fs-6">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary fs-6">Pasif</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Room.Description))
+                    {
+                        <div class="mb-3">
+                            <strong class="text-muted">Açıklama:</strong>
+                            <p class="mb-0">@Model.Room.Description</p>
+                        </div>
+                    }
+                    @if (Model.Room.RoomType != null)
+                    {
+                        <div class="mb-3">
+                            <strong class="text-muted">Oda Tipi:</strong>
+                            <p class="mb-0">@Model.Room.RoomType.Name</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.Room.Amenities != null && Model.Room.Amenities.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-star me-2"></i>Oda Özellikleri</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var amenity in Model.Room.Amenities)
+                            {
+                                <span class="badge bg-primary fs-6">@amenity.Name</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Rezervasyonlar (@Model.Room.Reservations?.Count ?? 0)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Room.Reservations != null && Model.Room.Reservations.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Müşteri</th>
+                                        <th>Giriş</th>
+                                        <th>Çıkış</th>
+                                        <th>Kişi</th>
+                                        <th>Tutar</th>
+                                        <th>Durum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var reservation in Model.Room.Reservations.OrderByDescending(r => r.CheckIn))
+                                    {
+                                        <tr>
+                                            <td>@reservation.Customer?.FullName</td>
+                                            <td>@reservation.CheckIn.ToShortDateString()</td>
+                                            <td>@reservation.CheckOut.ToShortDateString()</td>
+                                            <td>@reservation.GuestCount</td>
+                                            <td>@reservation.TotalPrice.ToString("C")</td>
+                                            <td>
+                                                <span class="badge @(reservation.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed ? "bg-success" : reservation.Status == HotelReservation.Core.Enums.ReservationStatus.Cancelled ? "bg-danger" : "bg-warning")">
+                                                    @reservation.Status
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Bu oda için henüz rezervasyon bulunmuyor.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>Hızlı İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-page="./Edit" asp-route-id="@Model.Room.Id" asp-route-hotelId="@Model.HotelId" class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i>Odayı Düzenle
+                        </a>
+                        <a asp-page="./Index" asp-route-hotelId="@Model.HotelId" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Oda Listesine Dön
+                        </a>
+                        <a asp-page="/Manager/Reservations/Index" class="btn btn-outline-info">
+                            <i class="bi bi-journal-bookmark me-2"></i>Rezervasyonları Görüntüle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
