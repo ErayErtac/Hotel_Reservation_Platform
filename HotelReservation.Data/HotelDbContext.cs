@@ -27,6 +27,7 @@ namespace HotelReservation.Data
         public DbSet<HotelAmenity> HotelAmenities { get; set; }
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
         public DbSet<ManagerApplication> ManagerApplications { get; set; }
+        public DbSet<ReviewReply> ReviewReplies { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -144,6 +145,29 @@ namespace HotelReservation.Data
                       .WithMany(u => u.Reviews)
                       .HasForeignKey(hr => hr.CustomerId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(hr => hr.Reservation)
+                      .WithMany()
+                      .HasForeignKey(hr => hr.ReservationId)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // ReviewReply
+            modelBuilder.Entity<ReviewReply>(entity =>
+            {
+                entity.Property(rr => rr.ReplyText)
+                      .IsRequired()
+                      .HasMaxLength(1000);
+
+                entity.HasOne(rr => rr.Review)
+                      .WithMany(r => r.Replies)
+                      .HasForeignKey(rr => rr.ReviewId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(rr => rr.Manager)
+                      .WithMany()
+                      .HasForeignKey(rr => rr.ManagerId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Keyless entity: Stored Procedure sonucu

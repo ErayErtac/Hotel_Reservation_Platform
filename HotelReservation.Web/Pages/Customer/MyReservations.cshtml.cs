@@ -19,11 +19,11 @@ namespace HotelReservation.Web.Pages.Customer
             _context = context;
         }
 
-        // Þimdilik demo kullanýcý (ileride login'den gelecek)
         private int CurrentUserId =>
                 int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         public IList<CustomerReservationResult> Reservations { get; set; } = new List<CustomerReservationResult>();
+        public Dictionary<int, int> ReservationHotelIds { get; set; } = new Dictionary<int, int>(); // ReservationId -> HotelId
 
         public async Task OnGetAsync()
         {
@@ -32,8 +32,23 @@ namespace HotelReservation.Web.Pages.Customer
                 .ToListAsync();
 
             Reservations = list
-                .OrderByDescending(r => r.CheckIn) // güvenlik için client tarafýnda da sýralayalým
+                .OrderByDescending(r => r.CheckIn)
                 .ToList();
+
+            // Her rezervasyon iÃ§in HotelId'yi al
+            var reservationIds = Reservations.Select(r => r.ReservationId).ToList();
+            var reservations = await _context.Reservations
+                .Include(r => r.Room)
+                .Where(r => reservationIds.Contains(r.Id))
+                .ToListAsync();
+
+            foreach (var reservation in reservations)
+            {
+                if (reservation.Room != null)
+                {
+                    ReservationHotelIds[reservation.Id] = reservation.Room.HotelId;
+                }
+            }
         }
     }
 }

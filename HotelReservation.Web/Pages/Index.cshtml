@@ -4,89 +4,246 @@
     ViewData["Title"] = "Hotel Reservation Platform";
 }
 
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.3;
+    }
+    
+    .search-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        margin-top: 2rem;
+    }
+    
+    .hotel-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .hotel-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+    
+    .hotel-image {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    .rating-badge {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
 <div class="hero-section mb-5">
-    <div class="hero-overlay"></div>
-    <div class="hero-content container">
-        <h1 class="display-5 fw-bold mb-3">Hayalindeki oteli bul, kolayca rezervasyon yap.</h1>
-        <p class="lead mb-4">
-            Yüzlerce otel arasından şehir ve tarih seç, uygun odaları saniyeler içinde görüntüle.
-        </p>
-
-        <form class="row g-3 hero-search-form" method="get" asp-page="/Search/Index">
-            <div class="col-md-4">
-                <label class="form-label text-light">Şehir</label>
-                <select name="City" class="form-select">
-                    <option value="">Tüm Şehirler</option>
-                    @foreach (var city in Model.Cities)
-                    {
-                        <option value="@city">@city</option>
-                    }
-                </select>
+    <div class="container">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6 text-white">
+                <h1 class="display-4 fw-bold mb-4">Hayalindeki Oteli Bul</h1>
+                <p class="lead mb-4">
+                    Binlerce otel arasından şehir ve tarih seç, uygun odaları saniyeler içinde görüntüle ve anında rezervasyon yap.
+                </p>
+                <div class="d-flex gap-3 mb-4">
+                    <div>
+                        <h3 class="fw-bold">500+</h3>
+                        <p class="mb-0 small">Otel Seçeneği</p>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold">50+</h3>
+                        <p class="mb-0 small">Şehir</p>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold">24/7</h3>
+                        <p class="mb-0 small">Destek</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3">
-                <label class="form-label text-light">Giriş</label>
-                <input name="CheckIn" type="date" class="form-control" />
+            <div class="col-lg-6">
+                <div class="search-card">
+                    <h4 class="mb-4 text-center fw-bold">Otel Ara</h4>
+                    <form method="get" asp-page="/Search/Index">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Şehir</label>
+                                <select name="City" class="form-select form-select-lg">
+                                    <option value="">Tüm Şehirler</option>
+                                    @foreach (var city in Model.Cities)
+                                    {
+                                        <option value="@city">@city</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Giriş Tarihi</label>
+                                <input name="CheckIn" type="date" class="form-control form-control-lg" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Çıkış Tarihi</label>
+                                <input name="CheckOut" type="date" class="form-control form-control-lg" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Misafir Sayısı</label>
+                                <input name="GuestCount" type="number" min="1" value="1" class="form-control form-control-lg" />
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold">
+                                    <i class="bi bi-search me-2"></i>Otel Ara
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-3">
-                <label class="form-label text-light">Çıkış</label>
-                <input name="CheckOut" type="date" class="form-control" />
-            </div>
-            <div class="col-md-2">
-                <label class="form-label text-light">Kişi</label>
-                <input name="GuestCount" type="number" min="1" value="1" class="form-control" />
-            </div>
-
-            <div class="col-12 d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary btn-lg px-4">
-                    Otel Ara
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <div class="container">
     @if (!User.Identity?.IsAuthenticated ?? true)
     {
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <h5 class="alert-heading">Hoş geldiniz!</h5>
-            <p class="mb-2">Rezervasyon yapmak için önce <a asp-page="/Account/Register" class="alert-link fw-bold">kayıt olun</a> veya <a asp-page="/Account/Login" class="alert-link">giriş yapın</a>.</p>
+        <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i>
+                <div>
+                    <h5 class="alert-heading mb-1">Hoş geldiniz!</h5>
+                    <p class="mb-0">Rezervasyon yapmak için önce <a asp-page="/Account/Register" class="alert-link fw-bold">kayıt olun</a> veya <a asp-page="/Account/Login" class="alert-link">giriş yapın</a>.</p>
+                </div>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <h2 class="mb-3">Popüler Oteller</h2>
-    <p class="text-muted mb-4">
-        Sistemde kayıtlı otelleri görmek için hemen <a asp-page="/Hotels/Index">Oteller</a> sayfasına göz atabilirsin.
-    </p>
+    @if (Model.FeaturedHotels != null && Model.FeaturedHotels.Any())
+    {
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-2">Önerilen Oteller</h2>
+                    <p class="text-muted">En yüksek puanlı ve en çok tercih edilen otellerimiz</p>
+                </div>
+                <a asp-page="/Hotels/Index" class="btn btn-outline-primary">Tümünü Gör</a>
+            </div>
+            
+            <div class="row g-4">
+                @foreach (var hotel in Model.FeaturedHotels)
+                {
+                    var avgRating = Model.GetAverageRating(hotel);
+                    var mainImage = hotel.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "/uploads/hotels/default.jpg";
+                    var minPrice = hotel.Rooms != null && hotel.Rooms.Any() ? hotel.Rooms.Min(r => r.PricePerNight) : (decimal?)null;
+                    
+                    <div class="col-md-6 col-lg-4">
+                        <div class="hotel-card card h-100">
+                            <div class="position-relative">
+                                <img src="@mainImage" class="hotel-image" alt="@hotel.Name" onerror="this.src='https://via.placeholder.com/400x200?text=Hotel'">
+                                @if (avgRating.HasValue)
+                                {
+                                    <div class="position-absolute top-0 end-0 m-3">
+                                        <span class="rating-badge">
+                                            ⭐ @avgRating.Value.ToString("0.0")
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@hotel.Name</h5>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-geo-alt"></i> @hotel.City
+                                </p>
+                                @if (!string.IsNullOrEmpty(hotel.Description))
+                                {
+                                    <p class="card-text small text-muted">
+                                        @(hotel.Description.Length > 80 ? hotel.Description.Substring(0, 80) + "..." : hotel.Description)
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    @if (minPrice.HasValue)
+                                    {
+                                        <div>
+                                            <span class="text-muted small">Başlangıç</span>
+                                            <div class="fw-bold text-primary">@minPrice.Value.ToString("C")</div>
+                                        </div>
+                                    }
+                                    <a asp-page="/Hotels/Details" asp-route-id="@hotel.Id" class="btn btn-primary btn-sm">
+                                        Detaylar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
-    <div class="info-cards row g-3">
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Güvenli Rezervasyon</h5>
-                    <p class="card-text">
-                        Admin onaylı oteller sayesinde müşteriler sadece güvenilir tesisler üzerinden işlem yapar.
+    <div class="mb-5">
+        <h2 class="fw-bold mb-4 text-center">Neden Bizi Seçmelisiniz?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card shadow-sm">
+                    <div class="feature-icon">🔒</div>
+                    <h5 class="fw-bold">Güvenli Rezervasyon</h5>
+                    <p class="text-muted">
+                        Onaylı ve güvenilir oteller arasından seçim yaparak içiniz rahat bir şekilde rezervasyon yapabilirsiniz. Tüm işlemleriniz korunur ve güvenli bir ortamda gerçekleşir.
                     </p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Otel Yönetimi</h5>
-                    <p class="card-text">
-                        Otel yöneticileri kendi otel ve odalarını yönetebilir, rezervasyonları takip edebilir.
+            <div class="col-md-4">
+                <div class="feature-card card shadow-sm">
+                    <div class="feature-icon">🏨</div>
+                    <h5 class="fw-bold">Otel Yönetimi</h5>
+                    <p class="text-muted">
+                        Otel sahipleri ve yöneticileri, odalarını ve rezervasyonlarını tek bir yerden rahatlıkla kontrol edebilir. Kullanıcı dostu panel sayesinde yönetim süreci hızlı ve pratik hale gelir.
                     </p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Gerçek Veritabanı Mantığı</h5>
-                    <p class="card-text">
-                        Stored procedure, trigger, fonksiyon ve view’ler ile güçlü bir veri tabanı altyapısı.
+            <div class="col-md-4">
+                <div class="feature-card card shadow-sm">
+                    <div class="feature-icon">⚡</div>
+                    <h5 class="fw-bold">Hızlı ve Güvenilir</h5>
+                    <p class="text-muted">
+                        Aradığınız otele saniyeler içinde ulaşır, işlemlerinizi beklemeden tamamlayabilirsiniz. Sistemimiz her zaman stabil çalışır ve size sorunsuz bir deneyim sunar.
                     </p>
                 </div>
             </div>

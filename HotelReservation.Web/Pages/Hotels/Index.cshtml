@@ -5,89 +5,97 @@
     ViewData["Title"] = "Oteller";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Oteller</h1>
-    <span class="text-muted">
-        @Model.TotalCount @(" otel bulundu")
-    </span>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-2">Oteller</h1>
+        <p class="text-muted mb-0">@Model.TotalCount otel bulundu</p>
+    </div>
 </div>
 
 @if (!string.IsNullOrEmpty(Model.SearchCity))
 {
-    <div class="alert alert-info">
+    <div class="alert alert-info alert-dismissible fade show shadow-sm">
+        <i class="bi bi-info-circle me-2"></i>
         <strong>Şehir:</strong> @Model.SearchCity için sonuçlar gösteriliyor.
-        <a asp-page="./Index" class="ms-2">Tüm otelleri göster</a>
+        <a asp-page="./Index" class="ms-2 fw-bold">Tüm otelleri göster</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 
 @if (Model.Hotels == null || !Model.Hotels.Any())
 {
-    <div class="alert alert-info">
-        Şu anda listelenecek otel bulunamadı.
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-building" style="font-size: 5rem; color: #dee2e6;"></i>
+        </div>
+        <h3 class="text-muted">Otel bulunamadı</h3>
+        <p class="text-muted">Şu anda listelenecek otel bulunmuyor.</p>
     </div>
 }
 else
 {
-    <div class="row g-3">
+    <div class="row g-4">
         @foreach (var hotel in Model.Hotels)
         {
             var avg = Model.GetAverageRating(hotel);
-            var mainImage = hotel.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath;
+            var mainImage = hotel.Images?.FirstOrDefault(i => i.IsMain)?.ImagePath ?? "https://via.placeholder.com/400x200?text=Hotel";
             var minPrice = hotel.Rooms != null && hotel.Rooms.Any()
-            ? hotel.Rooms.Min(r => r.PricePerNight)
-            : (decimal?)null;
+                ? hotel.Rooms.Min(r => r.PricePerNight)
+                : (decimal?)null;
 
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    @if (!string.IsNullOrEmpty(mainImage))
-                    {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hotel-card">
+                    <div class="position-relative">
                         <img src="@mainImage"
                              class="card-img-top"
-                             style="height: 180px; object-fit: cover;" />
-                    }
+                             style="height: 200px; object-fit: cover;"
+                             alt="@hotel.Name"
+                             onerror="this.src='https://via.placeholder.com/400x200?text=Hotel'">
+                        @if (avg.HasValue && avg.Value > 0)
+                        {
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-warning text-dark" style="font-size: 0.9rem;">
+                                    ⭐ @avg.Value.ToString("0.0")
+                                </span>
+                            </div>
+                        }
+                    </div>
 
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mb-1">@hotel.Name</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@hotel.City</h6>
+                        <h5 class="card-title fw-bold mb-2">@hotel.Name</h5>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-geo-alt-fill me-1"></i>@hotel.City
+                        </p>
 
                         @if (!string.IsNullOrEmpty(hotel.Description))
                         {
-                            <p class="card-text small text-muted">
-                                @(
-                                                    hotel.Description.Length > 90
-                                                    ? hotel.Description.Substring(0, 90) + "..."
-                                                    : hotel.Description
-                                                    )
+                            <p class="card-text small text-muted mb-3 flex-grow-1">
+                                @(hotel.Description.Length > 100
+                                    ? hotel.Description.Substring(0, 100) + "..."
+                                    : hotel.Description)
                             </p>
                         }
 
                         <div class="mt-auto">
-                            <div class="mb-2">
-                                @if (avg.HasValue && avg.Value > 0)
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                @if (minPrice.HasValue)
                                 {
-                                    <span class="badge bg-warning text-dark me-1">
-                                        ⭐ @avg.Value.ToString("0.0") / 5
-                                    </span>
+                                    <div>
+                                        <small class="text-muted d-block">Başlangıç Fiyatı</small>
+                                        <strong class="text-primary fs-5">@minPrice.Value.ToString("C")</strong>
+                                        <small class="text-muted">/ gece</small>
+                                    </div>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary me-1">
-                                        Henüz yorum yok
-                                    </span>
-                                }
-
-                                @if (minPrice.HasValue)
-                                {
-                                    <span class="badge bg-success">
-                                        Gecelik @minPrice.Value.ToString("C")'den başlayan
-                                    </span>
+                                    <span class="text-muted">Fiyat bilgisi yok</span>
                                 }
                             </div>
 
                             <a asp-page="./Details"
                                asp-route-id="@hotel.Id"
-                               class="btn btn-sm btn-primary">
-                                Detayları Gör
+                               class="btn btn-primary w-100">
+                                <i class="bi bi-eye me-2"></i>Detayları Gör
                             </a>
                         </div>
                     </div>
@@ -98,12 +106,14 @@ else
 
     @if (Model.TotalPages > 1)
     {
-        <nav aria-label="Sayfa navigasyonu" class="mt-4">
+        <nav aria-label="Sayfa navigasyonu" class="mt-5">
             <ul class="pagination justify-content-center">
                 @if (Model.CurrentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-city="@Model.SearchCity">Önceki</a>
+                        <a class="page-link" asp-page="./Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-city="@Model.SearchCity">
+                            <i class="bi bi-chevron-left"></i> Önceki
+                        </a>
                     </li>
                 }
 
@@ -117,7 +127,9 @@ else
                 @if (Model.CurrentPage < Model.TotalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-page="./Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-city="@Model.SearchCity">Sonraki</a>
+                        <a class="page-link" asp-page="./Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-city="@Model.SearchCity">
+                            Sonraki <i class="bi bi-chevron-right"></i>
+                        </a>
                     </li>
                 }
             </ul>

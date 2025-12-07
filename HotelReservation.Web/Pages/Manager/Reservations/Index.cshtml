@@ -5,106 +5,145 @@
     ViewData["Title"] = "Rezervasyon Yönetimi";
 }
 
-<h1>Rezervasyon Yönetimi</h1>
-
-<p>
-    <a asp-page="/Manager/Hotels/Index" class="btn btn-link">&larr; Otellerime dön</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-2">Rezervasyon Yönetimi</h1>
+        <p class="text-muted mb-0">Otelinize gelen rezervasyonları yönetin</p>
+    </div>
+    <a asp-page="/Manager/Hotels/Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Otellerime Dön
+    </a>
+</div>
 
 @if (TempData["Message"] is string msg)
 {
-    <div class="alert alert-success">@msg</div>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm">
+        <i class="bi bi-check-circle me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 }
 @if (TempData["ErrorMessage"] is string emsg)
 {
-    <div class="alert alert-danger">@emsg</div>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+        <i class="bi bi-exclamation-triangle me-2"></i>@emsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 }
 
 @if (Model.Reservations == null || !Model.Reservations.Any())
 {
-    <div class="alert alert-info">
-        Şu anda yönettiğiniz otellere ait rezervasyon bulunmuyor.
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-calendar-x" style="font-size: 5rem; color: #dee2e6;"></i>
+        </div>
+        <h3 class="text-muted">Henüz rezervasyon yok</h3>
+        <p class="text-muted">Otelinize henüz rezervasyon yapılmamış.</p>
     </div>
 }
 else
 {
-    <table class="table table-striped table-hover align-middle">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Otel</th>
-                <th>Oda</th>
-                <th>Müşteri</th>
-                <th>Giriş</th>
-                <th>Çıkış</th>
-                <th>Kişi</th>
-                <th>Tutar</th>
-                <th>Durum</th>
-                <th>İptal</th>
-                <th>Sil</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.Reservations)
-            {
-                <tr>
-                    <td>@r.Id</td>
-                    <td>@r.Room.Hotel.Name</td>
-                    <td>@r.Room.RoomNumber</td>
-                    <td>@r.Customer.FullName</td>
-                    <td>@r.CheckIn.ToShortDateString()</td>
-                    <td>@r.CheckOut.ToShortDateString()</td>
-                    <td>@r.GuestCount</td>
-                    <td>@r.TotalPrice.ToString("C")</td>
-                    <td>
-                        @switch (r.Status)
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Otel</th>
+                            <th>Oda</th>
+                            <th>Müşteri</th>
+                            <th>Giriş</th>
+                            <th>Çıkış</th>
+                            <th>Kişi</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Reservations)
                         {
-                            case HotelReservation.Core.Enums.ReservationStatus.Pending:
-                                @:<span class="badge bg-warning text-dark">Beklemede</span>
-                                break;
-                            case HotelReservation.Core.Enums.ReservationStatus.Confirmed:
-                                @:<span class="badge bg-success">Onaylandı</span>
-                                break;
-                            case HotelReservation.Core.Enums.ReservationStatus.Cancelled:
-                                @:<span class="badge bg-secondary">İptal</span>
-                                break;
-                            default:
-                                @:<span class="badge bg-light text-dark">Bilinmiyor</span>
-                                break;
+                            <tr>
+                                <td><strong>#@r.Id</strong></td>
+                                <td>
+                                    <div class="fw-semibold">@(r.Room?.Hotel?.Name ?? "Bilinmiyor")</div>
+                                    <small class="text-muted">@(r.Room?.Hotel?.City ?? "")</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@(r.Room?.RoomNumber ?? "Bilinmiyor")</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@r.Customer.FullName</div>
+                                    <small class="text-muted">@r.Customer.Email</small>
+                                </td>
+                                <td>@r.CheckIn.ToString("dd MMM yyyy")</td>
+                                <td>@r.CheckOut.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    <span class="badge bg-secondary">@r.GuestCount kişi</span>
+                                </td>
+                                <td>
+                                    <strong class="text-primary">@r.TotalPrice.ToString("C")</strong>
+                                </td>
+                                <td>
+                                    @switch (r.Status)
+                                    {
+                                        case HotelReservation.Core.Enums.ReservationStatus.Pending:
+                                            <span class="badge bg-warning text-dark">Beklemede</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.ReservationStatus.Confirmed:
+                                            <span class="badge bg-success">Onaylandı</span>
+                                            break;
+                                        case HotelReservation.Core.Enums.ReservationStatus.Cancelled:
+                                            <span class="badge bg-secondary">İptal</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-light text-dark">Bilinmiyor</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        @if (r.Status == HotelReservation.Core.Enums.ReservationStatus.Pending)
+                                        {
+                                            <form method="post" asp-page-handler="Approve" class="d-inline">
+                                                <input type="hidden" name="id" value="@r.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success" 
+                                                        onclick="return confirm('Bu rezervasyonu onaylamak istediğinize emin misiniz?');">
+                                                    <i class="bi bi-check-circle me-1"></i>Onayla
+                                                </button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Cancel" class="d-inline">
+                                                <input type="hidden" name="id" value="@r.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Bu rezervasyonu iptal etmek istediğinize emin misiniz?');">
+                                                    <i class="bi bi-x-circle me-1"></i>İptal
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (r.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed)
+                                        {
+                                            <form method="post" asp-page-handler="Cancel" class="d-inline">
+                                                <input type="hidden" name="id" value="@r.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Onaylı rezervasyonu iptal etmek istediğinize emin misiniz?');">
+                                                    <i class="bi bi-x-circle me-1"></i>İptal
+                                                </button>
+                                            </form>
+                                        }
+                                        <form method="post" asp-page-handler="Delete" class="d-inline">
+                                            <input type="hidden" name="id" value="@r.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
+                                                <i class="bi bi-trash me-1"></i>Sil
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
                         }
-                    </td>
-                    <td>
-                        @if (r.Status == HotelReservation.Core.Enums.ReservationStatus.Pending)
-                        {
-                            <form method="post" asp-page-handler="Approve" class="d-inline">
-                                <input type="hidden" name="id" value="@r.Id" />
-                                <button type="submit" class="btn btn-sm btn-success">Onayla</button>
-                            </form>
-                            <form method="post" asp-page-handler="Cancel" class="d-inline ms-1"
-                                  onsubmit="return confirm('Bu rezervasyonu iptal etmek istediğinize emin misiniz?');">
-                                <input type="hidden" name="id" value="@r.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">İptal</button>
-                            </form>
-                        }
-                        else if (r.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed)
-                        {
-                            <form method="post" asp-page-handler="Cancel" class="d-inline"
-                                  onsubmit="return confirm('Onaylı rezervasyonu iptal etmek istediğinize emin misiniz?');">
-                                <input type="hidden" name="id" value="@r.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">İptal</button>
-                            </form>
-                        }
-                    </td>
-                    <td>
-                        <form method="post" asp-page-handler="Delete" class="d-inline"
-                              onsubmit="return confirm('Bu rezervasyonu silmek istediğinize emin misiniz?');">
-                            <input type="hidden" name="id" value="@r.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
-                        </form>
-                    </td>
-
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }

@@ -264,11 +264,19 @@ namespace HotelReservation.Data.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("HotelId");
+
+                    b.HasIndex("ReservationId");
 
                     b.ToTable("HotelReviews");
                 });
@@ -438,6 +446,37 @@ namespace HotelReservation.Data.Migrations
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
+            modelBuilder.Entity("HotelReservation.Core.Entities.ReviewReply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReplyText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("ReviewReplies");
+                });
+
             modelBuilder.Entity("HotelReservation.Core.Entities.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -572,9 +611,16 @@ namespace HotelReservation.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HotelReservation.Core.Entities.Reservation", "Reservation")
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Customer");
 
                     b.Navigation("Hotel");
+
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("HotelReservation.Core.Entities.ManagerApplication", b =>
@@ -612,6 +658,25 @@ namespace HotelReservation.Data.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("HotelReservation.Core.Entities.ReviewReply", b =>
+                {
+                    b.HasOne("HotelReservation.Core.Entities.AppUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HotelReservation.Core.Entities.HotelReview", "Review")
+                        .WithMany("Replies")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
+
+                    b.Navigation("Review");
                 });
 
             modelBuilder.Entity("HotelReservation.Core.Entities.Room", b =>
@@ -661,6 +726,11 @@ namespace HotelReservation.Data.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("HotelReservation.Core.Entities.HotelReview", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("HotelReservation.Core.Entities.Room", b =>

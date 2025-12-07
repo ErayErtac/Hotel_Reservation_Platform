@@ -1,3 +1,4 @@
+using HotelReservation.Core.Entities;
 using HotelReservation.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,6 +16,7 @@ namespace HotelReservation.Web.Pages
         }
 
         public List<string> Cities { get; set; } = new List<string>();
+        public List<Hotel> FeaturedHotels { get; set; } = new List<Hotel>();
 
         public async Task OnGetAsync()
         {
@@ -25,6 +27,24 @@ namespace HotelReservation.Web.Pages
                 .Distinct()
                 .OrderBy(c => c)
                 .ToListAsync();
+
+            // Önerilen oteller: En yüksek puanlı ve en çok yorum alan oteller
+            FeaturedHotels = await _context.Hotels
+                .Include(h => h.Reviews)
+                .Include(h => h.Images)
+                .Include(h => h.Rooms)
+                .Where(h => h.IsActive && h.IsApproved && h.Reviews.Any())
+                .OrderByDescending(h => h.Reviews.Average(r => r.Rating))
+                .ThenByDescending(h => h.Reviews.Count)
+                .Take(6)
+                .ToListAsync();
+        }
+
+        public double? GetAverageRating(Hotel hotel)
+        {
+            if (hotel.Reviews == null || !hotel.Reviews.Any())
+                return null;
+            return hotel.Reviews.Average(r => r.Rating);
         }
     }
 }

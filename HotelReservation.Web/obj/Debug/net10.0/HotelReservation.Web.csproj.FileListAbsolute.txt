@@ -239,6 +239,6 @@ C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\HotelReservation.Web.pdb
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\HotelReservation.Web.genruntimeconfig.cache
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\ref\HotelReservation.Web.dll
-C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\qypjp2q5qu-{0}-fuosnnugz8-fuosnnugz8.gz
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\bin\Debug\net10.0\BCrypt.Net-Next.dll
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\compressed\qypjp2q5qu-{0}-94jfvhzylu-94jfvhzylu.gz
 C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Web\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

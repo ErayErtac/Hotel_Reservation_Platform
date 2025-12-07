@@ -125,6 +125,90 @@ else
         </div>
     </div>
 
+    @* Yorumlar Bölümü *@
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold">Yorumlar</h3>
+                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Customer") || User.IsInRole("HotelManager")))
+                {
+                    <a asp-page="/Customer/CreateReview" asp-route-hotelId="@Model.Hotel.Id" class="btn btn-primary">
+                        <i class="bi bi-chat-left-text me-2"></i>Yorum Yap
+                    </a>
+                }
+            </div>
+
+            @if (Model.Hotel.Reviews == null || !Model.Hotel.Reviews.Any())
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-chat-left-text fs-1 text-primary mb-3"></i>
+                    <h5 class="alert-heading">Henüz yorum yok</h5>
+                    <p class="mb-0">Bu otel için henüz yorum yapılmamış.</p>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var review in Model.Hotel.Reviews.OrderByDescending(r => r.CreatedAt))
+                    {
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1">@review.Customer.FullName</h5>
+                                            <div class="text-muted small mb-2">
+                                                <i class="bi bi-calendar me-1"></i>@review.CreatedAt.ToString("dd MMMM yyyy HH:mm")
+                                                @if (review.UpdatedAt.HasValue)
+                                                {
+                                                    <span class="ms-2">
+                                                        <i class="bi bi-pencil me-1"></i>Güncellendi: @review.UpdatedAt.Value.ToString("dd MMMM yyyy HH:mm")
+                                                    </span>
+                                                }
+                                            </div>
+                                            <div class="mb-2">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <span class="@(i <= review.Rating ? "text-warning" : "text-muted")" style="font-size: 1.2rem;">⭐</span>
+                                                }
+                                                <span class="ms-2 fw-semibold">@review.Rating / 5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(review.Comment))
+                                    {
+                                        <p class="mb-3">@review.Comment</p>
+                                    }
+
+                                    @if (review.Replies != null && review.Replies.Any())
+                                    {
+                                        <div class="border-top pt-3 mt-3">
+                                            <h6 class="fw-semibold mb-3">Otel Yöneticisi Yanıtları</h6>
+                                            @foreach (var reply in review.Replies.OrderBy(r => r.CreatedAt))
+                                            {
+                                                <div class="bg-light p-3 rounded mb-2">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <div>
+                                                            <strong>@reply.Manager.FullName</strong>
+                                                            <span class="badge bg-primary ms-2">Otel Yöneticisi</span>
+                                                        </div>
+                                                        <small class="text-muted">@reply.CreatedAt.ToString("dd MMMM yyyy HH:mm")</small>
+                                                    </div>
+                                                    <p class="mb-0">@reply.ReplyText</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
     @section Scripts {
         <script>
             function changeMainImage(src) {

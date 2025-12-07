@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Hotel Reservation Platform</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -41,10 +42,13 @@
                             else if (User.IsInRole("HotelManager"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Manager/Hotels/Index">Otel Yönetimi</a>
+                                    <a class="nav-link" asp-page="/Manager/Hotels/Index"><i class="bi bi-building me-1"></i>Otel Yönetimi</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Manager/Reservations/Index">Rezervasyon Yönetimi</a>
+                                    <a class="nav-link" asp-page="/Manager/Reservations/Index"><i class="bi bi-journal-bookmark me-1"></i>Rezervasyon Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Manager/Reviews/Index"><i class="bi bi-chat-left-text me-1"></i>Yorum Yönetimi</a>
                                 </li>
                             }
 

@@ -21,6 +21,11 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Customer/CancelReservation", "CustomerOrManager");
     options.Conventions.AuthorizePage("/Customer/Profile", "CustomerOrManager");
     options.Conventions.AuthorizePage("/Customer/BecomeManager", "CustomerOnly"); // Sadece Customer başvurabilir
+    options.Conventions.AuthorizePage("/Customer/CreateReview", "CustomerOrManager");
+    
+    // Rezervasyon sayfaları
+    options.Conventions.AuthorizePage("/Reservations/Create", "CustomerOrManager");
+    options.Conventions.AuthorizePage("/Reservations/Confirmation", "CustomerOrManager");
 
     // Giriş ve erişim reddedildi sayfaları herkese açık
     options.Conventions.AllowAnonymousToPage("/Account/Login");

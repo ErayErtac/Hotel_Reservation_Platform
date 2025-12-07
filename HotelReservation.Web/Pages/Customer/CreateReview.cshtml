@@ -1,0 +1,123 @@
+@page
+@model HotelReservation.Web.Pages.Customer.CreateReviewModel
+
+@{
+    ViewData["Title"] = "Yorum Yap";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold mb-0">Yorum Yap</h1>
+            <a asp-page="/Hotels/Details" asp-route-id="@Model.HotelId" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Otel Detayına Dön
+            </a>
+        </div>
+
+        @if (Model.Hotel != null)
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Hotel.Name</h5>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-geo-alt me-1"></i>@Model.Hotel.City
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (Model.Reservation != null)
+        {
+            @if (Model.HasExistingReview && Model.ExistingReview != null)
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Bilgi:</strong> Bu rezervasyon için daha önce yorum yaptınız. Yorumunuzu güncelleyebilirsiniz.
+                </div>
+            }
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <small class="text-muted">Rezervasyon Bilgisi:</small>
+                        <div class="fw-semibold">
+                            @Model.Reservation.CheckIn.ToString("dd MMMM yyyy") - 
+                            @Model.Reservation.CheckOut.ToString("dd MMMM yyyy")
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        <input type="hidden" asp-for="HotelId" />
+                        <input type="hidden" asp-for="ReservationId" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Puan</label>
+                            <div class="d-flex gap-2 align-items-center">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <label class="star-rating" style="cursor: pointer; font-size: 2rem;">
+                                        <input type="radio" asp-for="Rating" value="@i" class="d-none" />
+                                        <span class="star @(i <= Model.Rating ? "text-warning" : "text-muted")" 
+                                              onclick="setRating(@i)">
+                                            ⭐
+                                        </span>
+                                    </label>
+                                }
+                                <span class="ms-2 fw-semibold">@Model.Rating / 5</span>
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Comment" class="form-label fw-semibold">Yorumunuz</label>
+                            <textarea asp-for="Comment" class="form-control" rows="6" 
+                                      placeholder="Otel hakkındaki deneyiminizi paylaşın..."></textarea>
+                            <span asp-validation-for="Comment" class="text-danger"></span>
+                            <small class="text-muted">Maksimum 1000 karakter</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-check-circle me-2"></i>
+                                @(Model.HasExistingReview ? "Yorumu Güncelle" : "Yorumu Gönder")
+                            </button>
+                            <a asp-page="/Hotels/Details" asp-route-id="@Model.HotelId" class="btn btn-outline-secondary btn-lg">
+                                İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function setRating(rating) {
+            document.querySelector('input[name="Rating"][value="' + rating + '"]').checked = true;
+            // Update star display
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('text-muted');
+                    star.classList.add('text-warning');
+                } else {
+                    star.classList.remove('text-warning');
+                    star.classList.add('text-muted');
+                }
+            });
+            document.querySelector('.ms-2.fw-semibold').textContent = rating + ' / 5';
+        }
+    </script>
+}
+

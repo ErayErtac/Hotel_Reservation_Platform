@@ -57,7 +57,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <FileLength>214</FileLength>
-      <LastWriteTime>Wed, 26 Nov 2025 21:18:59 GMT</LastWriteTime>
+      <LastWriteTime>Sat, 06 Dec 2025 18:32:25 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\HotelReservation.Data.0ehcc27jnz.bundle.scp.css'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>

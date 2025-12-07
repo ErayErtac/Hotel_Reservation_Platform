@@ -14,115 +14,158 @@ namespace HotelReservation.Web.Pages.Reservations
     public class CreateModel : PageModel
     {
         private readonly HotelDbContext _context;
+        
         public CreateModel(HotelDbContext context)
-    {
-        _context = context;
-    }
+        {
+            _context = context;
+        }
 
-        // Normalde login olan kullanicidan alacagiz, simdilik sabit bir musteri
-        private int CurrentUserId =>
-                int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
+        // Giriş yapmış kullanıcının ID'sini al
+        private int? GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                return null;
+            return userId;
+        }
 
         [BindProperty(SupportsGet = true)]
-    public int RoomId { get; set; }
+        public int RoomId { get; set; }
 
-    [BindProperty]
-    public DateTime? CheckIn { get; set; }
+        [BindProperty]
+        public DateTime? CheckIn { get; set; }
 
-    [BindProperty]
-    public DateTime? CheckOut { get; set; }
+        [BindProperty]
+        public DateTime? CheckOut { get; set; }
 
-    [BindProperty]
-    public int GuestCount { get; set; } = 1;
+        [BindProperty]
+        public int GuestCount { get; set; } = 1;
 
-    public string? SuccessMessage { get; set; }
-    public string? ErrorMessage { get; set; }
+        public string? SuccessMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
-    public void OnGet(int roomId, DateTime? checkIn, DateTime? checkOut, int? guestCount)
-    {
-        RoomId = roomId;
-        CheckIn = checkIn ?? DateTime.Today.AddDays(1);
-        CheckOut = checkOut ?? DateTime.Today.AddDays(2);
-        GuestCount = guestCount ?? 1;
-    }
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        if (RoomId <= 0)
+        public IActionResult OnGet(int roomId, DateTime? checkIn, DateTime? checkOut, int? guestCount)
         {
-            ModelState.AddModelError(string.Empty, "Gecersiz oda bilgisi.");
-        }
+            // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return RedirectToPage("/Account/Login", new { returnUrl = Request.Path + Request.QueryString });
+            }
 
-        if (!CheckIn.HasValue || !CheckOut.HasValue)
-        {
-            ModelState.AddModelError(string.Empty, "Lutfen giris ve cikis tarihlerini secin.");
-        }
+            var userId = GetCurrentUserId();
+            if (!userId.HasValue)
+            {
+                ErrorMessage = "Kullanıcı bilgisi alınamadı. Lütfen tekrar giriş yapın.";
+                return RedirectToPage("/Account/Login");
+            }
 
-        if (GuestCount <= 0)
-        {
-            ModelState.AddModelError(nameof(GuestCount), "Kisi sayisi en az 1 olmalidir.");
-        }
+            RoomId = roomId;
+            CheckIn = checkIn ?? DateTime.Today.AddDays(1);
+            CheckOut = checkOut ?? DateTime.Today.AddDays(2);
+            GuestCount = guestCount ?? 1;
 
-        if (!ModelState.IsValid)
-        {
             return Page();
         }
 
-        try
+        public async Task<IActionResult> OnPostAsync()
         {
-            var connection = _context.Database.GetDbConnection();
+            // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return RedirectToPage("/Account/Login", new { returnUrl = Request.Path });
+            }
 
-            if (connection.State != ConnectionState.Open)
-                await connection.OpenAsync();
+            var userId = GetCurrentUserId();
+            if (!userId.HasValue)
+            {
+                ErrorMessage = "Kullanıcı bilgisi alınamadı. Lütfen tekrar giriş yapın.";
+                return RedirectToPage("/Account/Login");
+            }
 
-            await using var command = connection.CreateCommand();
-            command.CommandText = "dbo.sp_CreateReservation";
-            command.CommandType = CommandType.StoredProcedure;
+            if (RoomId <= 0)
+            {
+                ModelState.AddModelError(string.Empty, "Geçersiz oda bilgisi.");
+            }
+
+            if (!CheckIn.HasValue || !CheckOut.HasValue)
+            {
+                ModelState.AddModelError(string.Empty, "Lütfen giriş ve çıkış tarihlerini seçin.");
+            }
+
+            if (CheckIn.HasValue && CheckOut.HasValue && CheckIn.Value >= CheckOut.Value)
+            {
+                ModelState.AddModelError(string.Empty, "Çıkış tarihi giriş tarihinden sonra olmalıdır.");
+            }
+
+            if (CheckIn.HasValue && CheckIn.Value.Date < DateTime.Today)
+            {
+                ModelState.AddModelError(nameof(CheckIn), "Giriş tarihi bugünden önce olamaz.");
+            }
+
+            if (GuestCount <= 0)
+            {
+                ModelState.AddModelError(nameof(GuestCount), "Kişi sayısı en az 1 olmalıdır.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            try
+            {
+                var connection = _context.Database.GetDbConnection();
+
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
+
+                await using var command = connection.CreateCommand();
+                command.CommandText = "dbo.sp_CreateReservation";
+                command.CommandType = CommandType.StoredProcedure;
 
                 // Parametreler
-        var pCustomerId = new SqlParameter("@CustomerId", SqlDbType.Int)
-            {
-                Value = CurrentUserId
-            };
+                var pCustomerId = new SqlParameter("@CustomerId", SqlDbType.Int)
+                {
+                    Value = userId.Value
+                };
                 var pRoomId = new SqlParameter("@RoomId", SqlDbType.Int)
-            {
-                Value = RoomId
-            };
-            var pCheckIn = new SqlParameter("@CheckIn", SqlDbType.Date)
-            {
-                Value = CheckIn!.Value.Date
-            };
-            var pCheckOut = new SqlParameter("@CheckOut", SqlDbType.Date)
-            {
-                Value = CheckOut!.Value.Date
-            };
-            var pGuestCount = new SqlParameter("@GuestCount", SqlDbType.Int)
-            {
-                Value = GuestCount
-            };
-            var pReservationId = new SqlParameter("@ReservationId", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
+                {
+                    Value = RoomId
+                };
+                var pCheckIn = new SqlParameter("@CheckIn", SqlDbType.Date)
+                {
+                    Value = CheckIn!.Value.Date
+                };
+                var pCheckOut = new SqlParameter("@CheckOut", SqlDbType.Date)
+                {
+                    Value = CheckOut!.Value.Date
+                };
+                var pGuestCount = new SqlParameter("@GuestCount", SqlDbType.Int)
+                {
+                    Value = GuestCount
+                };
+                var pReservationId = new SqlParameter("@ReservationId", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            command.Parameters.AddRange(new[]
-            {
+                command.Parameters.AddRange(new[]
+                {
                     pCustomerId, pRoomId, pCheckIn, pCheckOut, pGuestCount, pReservationId
                 });
 
-            await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync();
 
-            var newId = (int)pReservationId.Value;
-            return RedirectToPage("/Reservations/Confirmation", new { id = newId });
-        }
-        catch (Exception ex)
-        {
-            // SP icindeki RAISERROR'lar da buraya dusuyor
-            ErrorMessage = "Rezervasyon olusturulurken hata olustu: " + ex.Message;
-        }
+                var newId = (int)pReservationId.Value;
+                return RedirectToPage("/Reservations/Confirmation", new { id = newId });
+            }
+            catch (Exception ex)
+            {
+                // SP içindeki RAISERROR'lar da buraya düşüyor
+                ErrorMessage = "Rezervasyon oluşturulurken hata oluştu: " + ex.Message;
+            }
 
-        return Page();
+            return Page();
+        }
     }
-}
 }
