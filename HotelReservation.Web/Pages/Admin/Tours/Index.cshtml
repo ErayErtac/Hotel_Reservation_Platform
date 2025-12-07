@@ -1,0 +1,166 @@
+@page
+@model HotelReservation.Web.Pages.Admin.Tours.IndexModel
+
+@{
+    ViewData["Title"] = "Admin - Tur Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Admin - Tur Yönetimi</h1>
+    <div class="btn-group">
+        <a asp-page="/Admin/Hotels/Index" class="btn btn-outline-primary">
+            <i class="bi bi-building me-2"></i>Otel Yönetimi
+        </a>
+        <a asp-page="/Admin/Users/Index" class="btn btn-outline-info">
+            <i class="bi bi-people me-2"></i>Kullanıcı Yönetimi
+        </a>
+        <a asp-page="/Admin/ManagerApplications/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-person-workspace me-2"></i>Yönetici Başvuruları
+        </a>
+    </div>
+</div>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string emsg)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>@emsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.PendingCount > 0)
+{
+    <div class="alert alert-warning">
+        <strong>@Model.PendingCount</strong> adet
+        <strong>onay bekleyen tur</strong> bulunuyor.
+        Aşağıdaki listeden inceleyip onaylayabilirsiniz.
+    </div>
+}
+else if (Model.StatusFilter == "pending")
+{
+    <div class="alert alert-success">
+        Şu anda onay bekleyen tur bulunmuyor.
+    </div>
+}
+
+<div class="btn-group mb-3">
+    <a asp-page="./Index"
+       asp-route-statusFilter="pending"
+       class="btn btn-outline-warning @(Model.StatusFilter == "pending" ? "active" : "")">
+        Onay Bekleyen (@Model.PendingCount)
+    </a>
+    <a asp-page="./Index"
+       asp-route-statusFilter="approved"
+       class="btn btn-outline-success @(Model.StatusFilter == "approved" ? "active" : "")">
+        Onaylı Turlar
+    </a>
+    <a asp-page="./Index"
+       asp-route-statusFilter="all"
+       class="btn btn-outline-secondary @(Model.StatusFilter == "all" ? "active" : "")">
+        Tüm Turlar
+    </a>
+</div>
+
+@if (Model.Tours == null || !Model.Tours.Any())
+{
+    <div class="alert alert-info">
+        Seçilen filtreye göre görüntülenecek tur bulunamadı.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Tur Adı</th>
+                            <th>Şehir</th>
+                            <th>Yönetici</th>
+                            <th>Tarih</th>
+                            <th>Fiyat</th>
+                            <th>Kapasite</th>
+                            <th>Onay Durumu</th>
+                            <th>Oluşturulma</th>
+                            <th class="text-end pe-4">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in Model.Tours)
+                        {
+                            <tr class="@(t.IsApproved ? "" : "table-warning")">
+                                <td class="ps-4">
+                                    <strong>@t.Name</strong>
+                                </td>
+                                <td>@t.City</td>
+                                <td>
+                                    @t.Manager?.FullName
+                                    <br />
+                                    <small class="text-muted">@t.Manager?.Email</small>
+                                </td>
+                                <td>
+                                    <small>@t.StartDate.ToShortDateString() - @t.EndDate.ToShortDateString()</small>
+                                </td>
+                                <td>
+                                    <strong class="text-success">@t.Price.ToString("C")</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@t.CurrentBookings / @t.Capacity</span>
+                                </td>
+                                <td>
+                                    @if (t.IsApproved)
+                                    {
+                                        <span class="badge bg-success">Onaylı</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                                    }
+                                </td>
+                                <td>@t.CreatedAt.ToLocalTime().ToShortDateString()</td>
+                                <td class="text-end pe-4">
+                                    @if (!t.IsApproved)
+                                    {
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <a asp-page="./Details" asp-route-id="@t.Id" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-eye me-1"></i>İncele
+                                            </a>
+                                            <form method="post" asp-page-handler="Approve" class="d-inline">
+                                                <input type="hidden" name="id" value="@t.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-check-circle me-1"></i>Onayla
+                                                </button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Reject" class="d-inline"
+                                                  onsubmit="return confirm('Bu turu reddetmek istediğinize emin misiniz? Tur silinecektir.');">
+                                                <input type="hidden" name="id" value="@t.Id" />
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-x-circle me-1"></i>Reddet
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="./Details" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>Detay
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+

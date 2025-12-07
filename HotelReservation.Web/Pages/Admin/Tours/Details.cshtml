@@ -1,0 +1,226 @@
+@page
+@model HotelReservation.Web.Pages.Admin.Tours.DetailsModel
+
+@{
+    ViewData["Title"] = "Tur Detayları";
+}
+
+@if (Model.Tour == null)
+{
+    <div class="alert alert-danger">Tur bulunamadı.</div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Tur Detayları</h1>
+            <p class="text-muted mb-0">@Model.Tour.Name</p>
+        </div>
+        <a asp-page="./Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Tur Listesine Dön
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>@Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Tur Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Tur Adı:</strong>
+                            <p class="mb-0 fs-5">@Model.Tour.Name</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Şehir:</strong>
+                            <p class="mb-0 fs-5">@Model.Tour.City</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Başlangıç Tarihi:</strong>
+                            <p class="mb-0">@Model.Tour.StartDate.ToLongDateString()</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Bitiş Tarihi:</strong>
+                            <p class="mb-0">@Model.Tour.EndDate.ToLongDateString()</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Fiyat (Kişi Başı):</strong>
+                            <p class="mb-0 fs-4 text-primary fw-bold">@Model.Tour.Price.ToString("C")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Kapasite:</strong>
+                            <p class="mb-0">
+                                <span class="badge bg-info">@Model.Tour.CurrentBookings / @Model.Tour.Capacity</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted">Durum:</strong>
+                            <p class="mb-0">
+                                @if (Model.Tour.IsApproved)
+                                {
+                                    <span class="badge bg-success">Onaylı</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                                }
+                                @if (Model.Tour.IsActive)
+                                {
+                                    <span class="badge bg-primary ms-2">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary ms-2">Pasif</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted">Tur Yöneticisi:</strong>
+                            <p class="mb-0">@Model.Tour.Manager?.FullName</p>
+                            <small class="text-muted">@Model.Tour.Manager?.Email</small>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Tour.Description))
+                    {
+                        <div class="mb-3">
+                            <strong class="text-muted">Açıklama:</strong>
+                            <p class="mb-0">@Model.Tour.Description</p>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Tour.Itinerary))
+                    {
+                        <div class="mb-3">
+                            <strong class="text-muted">Tur Programı:</strong>
+                            <p class="mb-0" style="white-space: pre-line;">@Model.Tour.Itinerary</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.Tour.Bookings != null && Model.Tour.Bookings.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Rezervasyonlar (@Model.Tour.Bookings.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Müşteri</th>
+                                        <th>Katılımcı</th>
+                                        <th>Tutar</th>
+                                        <th>Durum</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var booking in Model.Tour.Bookings.OrderByDescending(b => b.CreatedAt))
+                                    {
+                                        <tr>
+                                            <td>@booking.Customer?.FullName</td>
+                                            <td>@booking.ParticipantCount</td>
+                                            <td>@booking.TotalPrice.ToString("C")</td>
+                                            <td>
+                                                <span class="badge @(booking.Status == HotelReservation.Core.Enums.ReservationStatus.Confirmed ? "bg-success" : booking.Status == HotelReservation.Core.Enums.ReservationStatus.Cancelled ? "bg-danger" : "bg-warning")">
+                                                    @booking.Status
+                                                </span>
+                                            </td>
+                                            <td>@booking.CreatedAt.ToLocalTime().ToShortDateString()</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Tour.Reviews != null && Model.Tour.Reviews.Any())
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-star me-2"></i>Yorumlar (@Model.Tour.Reviews.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var review in Model.Tour.Reviews.OrderByDescending(r => r.CreatedAt))
+                        {
+                            <div class="border-bottom pb-3 mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <strong>@review.Customer?.FullName</strong>
+                                    <span class="badge bg-warning text-dark">@review.Rating ⭐</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(review.Comment))
+                                {
+                                    <p class="mb-0">@review.Comment</p>
+                                }
+                                <small class="text-muted">@review.CreatedAt.ToLocalTime().ToShortDateString()</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>İşlemler</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.IsPendingApproval)
+                    {
+                        <form method="post" asp-page-handler="Approve" class="mb-3">
+                            <input type="hidden" name="id" value="@Model.Tour.Id" />
+                            <button type="submit" class="btn btn-success w-100 btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Tur Onayla
+                            </button>
+                        </form>
+                        <form method="post" asp-page-handler="Reject"
+                              onsubmit="return confirm('Bu turu reddetmek istediğinize emin misiniz? Tur silinecektir.');">
+                            <input type="hidden" name="id" value="@Model.Tour.Id" />
+                            <button type="submit" class="btn btn-danger w-100 btn-lg">
+                                <i class="bi bi-x-circle me-2"></i>Tur Reddet
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>Bu tur onaylanmış.
+                        </div>
+                    }
+                    <hr>
+                    <a asp-page="./Index" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-arrow-left me-2"></i>Tur Listesine Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

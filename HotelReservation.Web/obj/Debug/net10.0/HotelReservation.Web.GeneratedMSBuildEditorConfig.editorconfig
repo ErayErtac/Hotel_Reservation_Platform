@@ -58,6 +58,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlckFwcGxpY2F0aW9uc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Admin/Tours/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVG91cnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Admin/Tours/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVG91cnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Admin/Users/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXNlcnNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -152,6 +160,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Images.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlclxUb3Vyc1xJbWFnZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Eray/Desktop/Workshop/HotelReservationPlatform/HotelReservation.Web/Pages/Manager/Tours/Index.cshtml]

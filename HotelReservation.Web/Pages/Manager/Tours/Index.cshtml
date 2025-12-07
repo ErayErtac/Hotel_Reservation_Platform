@@ -63,13 +63,24 @@ else
                     </td>
                     <td>@(t.IsActive ? "Evet" : "Hayır")</td>
                     <td>
-                        <a asp-page="./Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
-                        <a asp-page="./Bookings" asp-route-tourId="@t.Id" class="btn btn-sm btn-outline-info ms-1">Rezervasyonlar</a>
-                        <form method="post" asp-page-handler="Delete" class="d-inline ms-1"
-                              onsubmit="return confirm('Bu turu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
-                            <input type="hidden" name="id" value="@t.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
-                        </form>
+                        <div class="d-flex gap-2">
+                            <a asp-page="./Edit" asp-route-id="@t.Id" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil me-1"></i>Düzenle
+                            </a>
+                            <a asp-page="./Images" asp-route-tourId="@t.Id" class="btn btn-sm btn-info text-white">
+                                <i class="bi bi-image me-1"></i>Fotoğraflar
+                            </a>
+                            <a asp-page="./Bookings" asp-route-tourId="@t.Id" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-calendar-check me-1"></i>Rezervasyonlar
+                            </a>
+                            <form method="post" asp-page-handler="Delete" class="d-inline"
+                                  onsubmit="return confirm('Bu turu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                                <input type="hidden" name="id" value="@t.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Sil
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             }
