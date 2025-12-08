@@ -119,6 +119,7 @@ namespace HotelReservation.Web.Pages.Reservations
                 if (connection.State != ConnectionState.Open)
                     await connection.OpenAsync();
 
+                // stored procedure çağrısı
                 await using var command = connection.CreateCommand();
                 command.CommandText = "dbo.sp_CreateReservation";
                 command.CommandType = CommandType.StoredProcedure;

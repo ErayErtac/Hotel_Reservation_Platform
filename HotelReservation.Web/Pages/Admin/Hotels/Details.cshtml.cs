@@ -57,6 +57,7 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
 
             try
             {
+                // Stored procedure çaðrýsý ile onayla
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC dbo.sp_ApproveHotel @HotelId = {0}", id);
 
@@ -90,6 +91,7 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
             if (Hotel == null)
                 return false;
 
+            // Stored procedure ile istatistikleri al
             var statsList = await _context.HotelStatsResults
                 .FromSqlRaw("EXEC dbo.sp_GetHotelStats @HotelId = {0}", id)
                 .ToListAsync();

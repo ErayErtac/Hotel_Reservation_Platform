@@ -28,6 +28,7 @@ namespace HotelReservation.Web.Pages.Customer
 
         public async Task OnGetAsync()
         {
+            // stored procedure ile müşteri rezervasyonlarını al
             var list = await _context.CustomerReservationResults
                 .FromSqlRaw("EXEC dbo.sp_GetCustomerReservations @CustomerId = {0}", CurrentUserId)
                 .ToListAsync();

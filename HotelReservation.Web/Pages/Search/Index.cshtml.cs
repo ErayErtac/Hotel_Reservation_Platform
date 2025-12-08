@@ -122,6 +122,7 @@ namespace HotelReservation.Web.Pages.Search
 
                     var cityParam = string.IsNullOrWhiteSpace(City) ? null : City;
 
+                    //1. Stored procedure çağrısı
                     var results = await _context.AvailableRoomResults
                         .FromSqlRaw(
                             "EXEC dbo.sp_SearchAvailableRooms @City = {0}, @CheckIn = {1}, @CheckOut = {2}, @GuestCount = {3}",
