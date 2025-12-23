@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HotelReservation.Core.Entities
 {
-    // sp_SearchAvailableRooms sonucunu temsil eden "read only" model
+    // sp_SearchAvailableRooms sonucunu temsil eden "read only" model (Sadece okumak ve listelemek için kullanılır)
     public class AvailableRoomResult
     {
         public int HotelId { get; set; }

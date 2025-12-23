@@ -31,7 +31,7 @@ namespace HotelReservation.Web.Pages.Manager.Hotels
         {
             // Navigation property validation'ýný atla
             ModelState.Remove("Input.Manager");
-            ModelState.Remove("Input.ManagerId"); // extra güvence
+            ModelState.Remove("Input.ManagerId");
 
             if (!ModelState.IsValid)
             {

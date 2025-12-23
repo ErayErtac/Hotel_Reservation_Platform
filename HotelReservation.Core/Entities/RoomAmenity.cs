@@ -2,6 +2,8 @@ namespace HotelReservation.Core.Entities
 {
     public class RoomAmenity
     {
+        // Odalara ait imkanlarý (amenities) temsil eden entity sýnýfý
+
         public int Id { get; set; }
         public int RoomId { get; set; }
         public Room? Room { get; set; }
@@ -9,4 +11,3 @@ namespace HotelReservation.Core.Entities
         public string? Icon { get; set; } // Optional icon class name
     }
 }
-

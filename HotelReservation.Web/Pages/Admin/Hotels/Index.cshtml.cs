@@ -24,7 +24,7 @@ namespace HotelReservation.Web.Pages.Admin.Hotels
         // Kaç otel onay bekliyor?
         public int PendingCount { get; set; }
         
-        // Kaç otel yöneticisi başvurusu bekliyor?
+        // Kaç otel yöneticisi başvurusu bekliyor
         public int PendingManagerApplicationsCount { get; set; }
 
         [TempData]

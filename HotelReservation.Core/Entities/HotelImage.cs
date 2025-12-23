@@ -6,14 +6,13 @@ namespace HotelReservation.Core.Entities
 {
     public class HotelImage
     {
+        // Otele ait görselleri tutan entity sınıfı
+
         public int Id { get; set; }
-
         public int HotelId { get; set; }
-
-        public string ImagePath { get; set; } = null!; // /uploads/hotels/{hotelId}/abc.jpg gibi
+        public string ImagePath { get; set; } = null!;
         public bool IsMain { get; set; }
         public DateTime UploadedAt { get; set; }
-
         public Hotel? Hotel { get; set; }
     }
 }

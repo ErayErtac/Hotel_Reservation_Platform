@@ -2,6 +2,8 @@ using BCrypt.Net;
 
 namespace HotelReservation.Core.Services
 {
+    // Kullanıcı şifrelerini hashlemek ve doğrulamak için kullanılan yardımcı sınıf
+
     public static class PasswordHasher
     {
         public static string HashPassword(string password)
@@ -49,4 +51,3 @@ namespace HotelReservation.Core.Services
         }
     }
 }
-

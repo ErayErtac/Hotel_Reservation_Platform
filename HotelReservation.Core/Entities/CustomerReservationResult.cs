@@ -7,6 +7,8 @@ namespace HotelReservation.Core.Entities
 {
     public class CustomerReservationResult
     {
+        // Müşteriye ait rezervasyonları listelemek için kullanılan read-only sonuç modeli
+
         public int ReservationId { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }

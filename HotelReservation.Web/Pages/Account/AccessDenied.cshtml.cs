@@ -13,4 +13,3 @@ namespace HotelReservation.Web.Pages.Account
         }
     }
 }
-

@@ -6,17 +6,16 @@ namespace HotelReservation.Core.Entities
 {
     public class Hotel
     {
-        public int Id { get; set; }
+        // Uygulamadaki otel bilgilerini temsil eden entity sınıfı
 
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string? Description { get; set; }
-
         public bool IsApproved { get; set; } = false; // Admin onayı
         public bool IsActive { get; set; } = true;
         public bool IsFeatured { get; set; } = false; // Ana sayfada önerilen olarak gösterilsin mi
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Otel yöneticisi

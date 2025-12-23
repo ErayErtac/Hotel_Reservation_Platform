@@ -8,4 +8,3 @@ namespace HotelReservation.Core.Entities
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
     }
 }
-

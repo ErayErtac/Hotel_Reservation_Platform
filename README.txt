@@ -1,6 +1,6 @@
 HOTEL RESERVATION PLATFORM
 
-Bu proje, .NET 10, Razor Pages, MSSQL ve Entity Framework Core kullanılarak geliştirilmiş çok otelli bir rezervasyon platformudur. 
+Bu proje, .NET 10, Razor Pages, MSSQL ve Entity Framework Core kullanılarak geliştirilmiş bir rezervasyon platformudur. 
 Sistem; Admin, Otel Yöneticisi ve Müşteri rollerine göre farklı yetkiler içerir.
 
 -------------------------------------------------------------
