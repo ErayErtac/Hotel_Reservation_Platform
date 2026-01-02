@@ -920,11 +920,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\HotelReservation.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Eray\\Desktop\\Projects\\HotelReservationPlatform\\HotelReservation.Core\\HotelReservation.Core.csproj",
       "projectName": "HotelReservation.Core",
-      "projectPath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\HotelReservation.Core.csproj",
+      "projectPath": "C:\\Users\\Eray\\Desktop\\Projects\\HotelReservationPlatform\\HotelReservation.Core\\HotelReservation.Core.csproj",
       "packagesPath": "C:\\Users\\Eray\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Core\\obj\\",
+      "outputPath": "C:\\Users\\Eray\\Desktop\\Projects\\HotelReservationPlatform\\HotelReservation.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

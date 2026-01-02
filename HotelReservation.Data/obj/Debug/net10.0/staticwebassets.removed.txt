@@ -1,0 +1,1 @@
+C:\Users\Eray\Desktop\Workshop\HotelReservationPlatform\HotelReservation.Data\wwwroot\exampleJsInterop.js

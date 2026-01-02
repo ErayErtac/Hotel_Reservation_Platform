@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5OC1EBzzh50=",
+  "dgSpecHash": "JRc4Anv5yX4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Eray\\Desktop\\Workshop\\HotelReservationPlatform\\HotelReservation.Data\\HotelReservation.Data.csproj",
+  "projectFilePath": "C:\\Users\\Eray\\Desktop\\Projects\\HotelReservationPlatform\\HotelReservation.Data\\HotelReservation.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Eray\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Eray\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

@@ -33,31 +33,38 @@ namespace HotelReservation.Web.Pages.Customer
                 .FromSqlRaw("EXEC dbo.sp_GetCustomerReservations @CustomerId = {0}", CurrentUserId)
                 .ToListAsync();
 
-            Reservations = list
-                .OrderByDescending(r => r.CheckIn)
-                .ToList();
-
-            // Tur rezervasyonlarını al
-            TourBookings = await _context.TourBookings
-                .Include(tb => tb.Tour)
-                .Where(tb => tb.CustomerId == CurrentUserId)
-                .OrderByDescending(tb => tb.CreatedAt)
-                .ToListAsync();
-
-            // Her rezervasyon için HotelId'yi al
-            var reservationIds = Reservations.Select(r => r.ReservationId).ToList();
+            // Her rezervasyon için HotelId'yi ve CreatedAt'i al
+            var reservationIds = list.Select(r => r.ReservationId).ToList();
             var reservations = await _context.Reservations
                 .Include(r => r.Room)
                 .Where(r => reservationIds.Contains(r.Id))
                 .ToListAsync();
 
-            foreach (var reservation in reservations)
+            // CreatedAt bilgisini kullanarak sıralama yap
+            var reservationsWithDates = list
+                .Join(reservations,
+                    cr => cr.ReservationId,
+                    r => r.Id,
+                    (cr, r) => new { ReservationResult = cr, CreatedAt = r.CreatedAt, Reservation = r })
+                .OrderByDescending(x => x.CreatedAt) // En yeni rezervasyon en üstte
+                .ToList();
+
+            Reservations = reservationsWithDates.Select(x => x.ReservationResult).ToList();
+
+            foreach (var item in reservationsWithDates)
             {
-                if (reservation.Room != null)
+                if (item.Reservation.Room != null)
                 {
-                    ReservationHotelIds[reservation.Id] = reservation.Room.HotelId;
+                    ReservationHotelIds[item.Reservation.Id] = item.Reservation.Room.HotelId;
                 }
             }
+
+            // Tur rezervasyonlarını al (zaten CreatedAt'e göre sıralı)
+            TourBookings = await _context.TourBookings
+                .Include(tb => tb.Tour)
+                .Where(tb => tb.CustomerId == CurrentUserId)
+                .OrderByDescending(tb => tb.CreatedAt)
+                .ToListAsync();
         }
     }
 }
